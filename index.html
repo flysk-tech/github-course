@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub для команды Флайск — интерактивный курс</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#1c2333;--mute:#5d6b85;--line:#dde3ef;--brand:#2f6df6;--brand-d:#1f4fc2;--ok:#1a9d5c;--okbg:#e6f6ee;--bad:#d03a3a;--badbg:#fdeaea;--warn:#a86a00;--warnbg:#fff4de;--side:#141b2e;--code:#0f1524}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font:16px/1.6 -apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+.app{display:flex;min-height:100%}
+.side{width:290px;flex:none;background:var(--side);color:#cfd7ea;padding:20px 16px;position:sticky;top:0;height:100vh;overflow:auto;display:flex;flex-direction:column}
+.brand{display:block;color:#fff;font-weight:700;font-size:22px;text-decoration:none;margin-bottom:18px}
+.brand span{display:block;font-size:12px;font-weight:400;color:#8fa0c4}
+#nav{flex:1}
+#nav a{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:8px;color:#cfd7ea;text-decoration:none;font-size:14px;margin-bottom:2px}
+#nav a:hover{background:#1f2942}
+#nav a.cur{background:var(--brand);color:#fff}
+#nav .n{width:24px;height:24px;border-radius:50%;background:#26324f;display:grid;place-items:center;font-size:12px;flex:none}
+#nav a.done .n{background:var(--ok);color:#fff}
+#nav a.cur .n{background:#fff;color:var(--brand)}
+.side-foot{padding-top:14px;border-top:1px solid #26324f}
+.bar{height:8px;background:#26324f;border-radius:4px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.side-foot small{color:#8fa0c4}
+.link{background:none;border:0;color:#8fa0c4;text-decoration:underline;cursor:pointer;font-size:12px;padding:6px 0;display:block}
+.main{flex:1;min-width:0;padding:32px 40px 80px}
+.view{max-width:860px;margin:0 auto}
+.burger{display:none}
+h1{font-size:30px;line-height:1.25;margin:0 0 8px}
+h2{font-size:22px;margin:32px 0 10px}
+h3{font-size:17px;margin:22px 0 8px}
+p{margin:0 0 12px}
+.lead{font-size:18px;color:var(--mute)}
+ul,ol{padding-left:22px;margin:0 0 14px}
+li{margin-bottom:5px}
+code{font:13.5px/1.4 Consolas,"SF Mono",monospace;background:#e9eefb;padding:1px 6px;border-radius:5px;color:#1b3b8f}
+pre{background:var(--code);color:#e6edf8;padding:14px 16px;border-radius:10px;overflow:auto;font:13.5px/1.55 Consolas,"SF Mono",monospace;margin:0 0 16px}
+pre code{background:none;color:inherit;padding:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:18px}
+.note,.warn,.tip{border-radius:10px;padding:12px 16px;margin:0 0 16px;border-left:4px solid}
+.note{background:#eaf1ff;border-color:var(--brand)}
+.warn{background:var(--warnbg);border-color:#e0a000}
+.tip{background:var(--okbg);border-color:var(--ok)}
+.note b:first-child,.warn b:first-child,.tip b:first-child{display:block;margin-bottom:2px}
+table{border-collapse:collapse;width:100%;margin:0 0 16px;font-size:14.5px;background:#fff}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#eef2fb}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:9px;padding:10px 18px;font-size:15px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{background:var(--brand-d)}
+.btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+.btn.ghost:hover{background:#eaf1ff}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row.sp{justify-content:space-between}
+.pager{margin-top:30px;display:flex;justify-content:space-between;gap:10px}
+.crumbs{font-size:13px;color:var(--mute);margin-bottom:6px}
+.steps{display:flex;gap:6px;margin:14px 0 22px;flex-wrap:wrap}
+.steps a{padding:5px 12px;border-radius:20px;background:#e6ebf6;color:var(--mute);font-size:13px;text-decoration:none}
+.steps a.cur{background:var(--brand);color:#fff}
+.steps a.done{background:var(--okbg);color:var(--ok)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.mod{display:block;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;text-decoration:none;color:inherit}
+.mod:hover{border-color:var(--brand);box-shadow:0 4px 14px rgba(47,109,246,.12)}
+.mod b{display:block;margin:2px 0 4px}
+.mod small{color:var(--mute)}
+.badge{display:inline-block;font-size:12px;padding:2px 9px;border-radius:12px;background:#e6ebf6;color:var(--mute)}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.q{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:16px}
+.q h3{margin-top:0}
+.opt{display:block;width:100%;text-align:left;background:#f6f8fd;border:1px solid var(--line);border-radius:9px;padding:10px 14px;margin-bottom:8px;font-size:15px;cursor:pointer;color:var(--ink)}
+.opt:hover:not([disabled]){border-color:var(--brand);background:#eef4ff}
+.opt.sel{border-color:var(--brand);background:#e3edff}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.opt[disabled]{cursor:default}
+.explain{margin-top:10px;padding:10px 14px;border-radius:9px;background:#f0f3fa;font-size:14.5px}
+.score{font-size:48px;font-weight:700}
+.score.ok{color:var(--ok)}.score.bad{color:var(--bad)}
+.term{background:var(--code);border-radius:12px;overflow:hidden;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.term-top{background:#1b2338;color:#8fa0c4;padding:8px 14px;font-size:13px;display:flex;justify-content:space-between}
+.term-task{background:#18213a;color:#e6edf8;padding:12px 16px;font-size:14.5px;border-bottom:1px solid #26324f}
+.term-task b{color:#7fb0ff}
+.term-out{padding:14px 16px;font:13.5px/1.55 Consolas,"SF Mono",monospace;color:#d6deef;max-height:340px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.term-out .cmd{color:#fff}.term-out .p{color:#5ee08f}.term-out .err{color:#ff8a8a}.term-out .dim{color:#7d8bab}
+.term-in{display:flex;gap:8px;padding:10px 16px;border-top:1px solid #26324f;background:#0b101c}
+.term-in span{color:#5ee08f;font:13.5px Consolas,monospace;padding-top:7px}
+.term-in input{flex:1;background:transparent;border:0;outline:0;color:#fff;font:14px Consolas,"SF Mono",monospace}
+.term-in button{background:#26324f;color:#cfd7ea;border:0;border-radius:6px;padding:4px 12px;cursor:pointer}
+.term-in button:hover{background:#34426a}
+.prog{font-size:13px;color:#8fa0c4}
+.web{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:18px;box-shadow:0 4px 16px rgba(20,27,46,.08)}
+.web-top{background:#e9edf6;padding:8px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.web-url{flex:1;background:#fff;border:1px solid var(--line);border-radius:16px;padding:3px 14px;font:13px Consolas,"SF Mono",monospace;color:#3b4863;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.web-top .prog{color:var(--mute);white-space:nowrap}
+.web-task{background:#eaf1ff;padding:12px 16px;font-size:14.5px;border-bottom:1px solid var(--line)}
+.web-page{padding:16px 18px;background:#fbfcfe;border-bottom:1px solid var(--line);font-size:14.5px}
+.web-page .gh-h{font-weight:700;font-size:16px;margin-bottom:8px;color:#0b4fd6}
+.web-page .gh-box{border:1px solid var(--line);border-radius:8px;background:#fff;padding:8px 12px;margin-bottom:8px}
+.web-page .gh-box.add{background:#e6f6ee;border-color:#bfe5cf;font-family:Consolas,monospace;font-size:13px}
+.web-page .gh-box.del{background:#fdeaea;border-color:#f1c3c3;font-family:Consolas,monospace;font-size:13px}
+.web-page .gh-tabs{display:flex;gap:14px;border-bottom:1px solid var(--line);margin-bottom:10px;font-size:13.5px;color:var(--mute)}
+.web-page .gh-tabs span{padding:4px 0}
+.web-page .gh-tabs .on{color:var(--ink);font-weight:700;border-bottom:2px solid #f08a2c}
+.web-page .gh-side{color:var(--mute);font-size:13px}
+.web-act{display:flex;flex-wrap:wrap;gap:8px;padding:14px 18px 6px}
+.web-btn{background:#f3f6fb;border:1px solid #c5cee0;border-radius:7px;padding:8px 14px;font-size:14px;cursor:pointer;color:var(--ink)}
+.web-btn:hover{border-color:var(--brand);background:#eaf1ff}
+.web-form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;width:100%}
+.web-form label{flex:1;min-width:240px;font-size:13.5px;color:var(--mute)}
+.web-form input{display:block;width:100%;margin-top:4px;padding:8px 10px;border:1px solid #c5cee0;border-radius:7px;font:14px Consolas,"SF Mono",monospace;color:var(--ink)}
+.web-msg{margin:6px 18px 10px;padding:9px 13px;border-radius:9px;font-size:14px}
+.web-msg.ok{background:var(--okbg);color:#0f6b3d}
+.web-msg.bad{background:var(--badbg);color:#8f2222}
+.web-msg.dim{background:#f0f3fa;color:var(--mute)}
+.web-foot{padding:6px 18px 14px}
+.web-foot .btn{padding:5px 12px;font-size:13px}
+.cls{display:grid;grid-template-columns:1fr 220px 28px;gap:8px 12px;align-items:center;margin-bottom:12px}
+.cls select{padding:7px;border:1px solid var(--line);border-radius:8px;font-size:14px;background:#fff}
+.cls .m{font-weight:700;text-align:center}
+.cls .m.ok{color:var(--ok)}.cls .m.bad{color:var(--bad)}
+.ord{list-style:none;padding:0;margin:0 0 12px}
+.ord li{display:flex;gap:10px;align-items:center;background:#f6f8fd;border:1px solid var(--line);border-radius:9px;padding:8px 12px;margin-bottom:6px}
+.ord li.ok{border-color:var(--ok);background:var(--okbg)}
+.ord li.bad{border-color:var(--bad);background:var(--badbg)}
+.ord li span{flex:1;font-size:14.5px}
+.ord button{border:1px solid var(--line);background:#fff;border-radius:6px;width:28px;height:28px;cursor:pointer}
+.hid{display:none}
+@media(max-width:860px){
+  .app{display:block}
+  .side{position:fixed;left:-300px;top:0;z-index:20;transition:left .2s;width:280px}
+  .side.open{left:0}
+  .main{padding:56px 16px 60px}
+  .burger{display:block;position:fixed;top:10px;left:10px;z-index:10;background:var(--side);color:#fff;border:0;border-radius:8px;padding:8px 14px}
+  .cls{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side" id="side">
+    <a class="brand" href="#/">GitHub<span>курс для команды Флайск</span></a>
+    <nav id="nav"></nav>
+    <div class="side-foot">
+      <div class="bar"><i id="totalBar"></i></div>
+      <small id="totalText"></small>
+      <button class="link" id="resetBtn" type="button">Сбросить прогресс</button>
+    </div>
+  </aside>
+  <main class="main">
+    <button class="burger" id="burger" type="button" aria-label="Меню">Меню</button>
+    <div id="view" class="view"></div>
+  </main>
+</div>
+<script>
+(function () {
+  var KEY = 'ghcourse:v1';
+  var C = window.COURSE = { modules: [], data: {}, test: [], widgets: {} };
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  C.esc = esc;
+
+  var state;
+  function load() {
+    try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { state = {}; }
+    state.quiz = state.quiz || {};
+    state.seen = state.seen || {};
+    state.test = state.test || { best: 0, passed: false };
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  load();
+
+  var PASS_MOD = 0.7, PASS_TEST = 0.8;
+  function modDone(m) { return !!(state.quiz[m.id] && state.quiz[m.id].passed); }
+  function doneCount() { return C.modules.filter(modDone).length; }
+
+  var $ = function (id) { return document.getElementById(id); };
+  var view, nav;
+
+  function renderNav(cur) {
+    var h = '<a href="#/" class="' + (cur === 'home' ? 'cur' : '') + '"><span class="n">&#8962;</span>Главная</a>';
+    C.modules.forEach(function (m) {
+      var cls = (cur === m.id ? 'cur ' : '') + (modDone(m) ? 'done' : '');
+      h += '<a href="#/m/' + m.id + '" class="' + cls + '"><span class="n">' + (modDone(m) ? '&#10003;' : m.id) + '</span>' + esc(m.title) + '</a>';
+    });
+    h += '<a href="#/cheat" class="' + (cur === 'cheat' ? 'cur' : '') + '"><span class="n">&#9776;</span>Шпаргалка</a>';
+    h += '<a href="#/test" class="' + (cur === 'test' ? 'cur' : '') + (state.test.passed ? ' done' : '') + '"><span class="n">' + (state.test.passed ? '&#10003;' : '&#9733;') + '</span>Итоговый тест</a>';
+    nav.innerHTML = h;
+    var total = C.modules.length + 1, d = doneCount() + (state.test.passed ? 1 : 0);
+    $('totalBar').style.width = Math.round(d / total * 100) + '%';
+    $('totalText').textContent = 'Пройдено ' + d + ' из ' + total;
+  }
+
+  function mountWidgets(root) {
+    root.querySelectorAll('[data-w]').forEach(function (el) {
+      var f = C.widgets[el.dataset.w];
+      if (f) f(el, C.data[el.dataset.id] || {});
+    });
+  }
+
+  function homeView() {
+    var h = '<h1>GitHub для команды Флайск</h1>' +
+      '<p class="lead">Короткий интерактивный курс: от нуля до уверенной работы с репозиториями, pull request-ами и Claude Code. Примеры основаны на типичной работе нашей команды.</p>';
+    h += '<div class="note"><b>Как проходить</b>Каждый блок: уроки, затем проверочные вопросы (нужно ответить правильно минимум на 70%). После всех блоков &mdash; итоговый тест из 20 вопросов (проходной порог 80%). Прогресс сохраняется в этом браузере.</div>';
+    h += '<div class="grid">';
+    C.modules.forEach(function (m) {
+      var q = state.quiz[m.id];
+      h += '<a class="mod" href="#/m/' + m.id + '"><span class="badge ' + (modDone(m) ? 'ok' : '') + '">' +
+        (modDone(m) ? 'Пройден, ' + Math.round(q.score * 100) + '%' : 'Блок ' + m.id + ' · ' + m.min + ' мин') + '</span><b>' + esc(m.title) + '</b><small>' + esc(m.sub) + '</small></a>';
+    });
+    h += '<a class="mod" href="#/test"><span class="badge ' + (state.test.passed ? 'ok' : '') + '">' + (state.test.passed ? 'Сдан, лучший результат ' + Math.round(state.test.best * 100) + '%' : 'Финал') + '</span><b>Итоговый тест</b><small>20 вопросов по всем блокам</small></a>';
+    h += '<a class="mod" href="#/cheat"><span class="badge">Справочник</span><b>Шпаргалка</b><small>Команды, правила и что делать, если что-то пошло не так</small></a>';
+    h += '</div>';
+    var next = C.modules.filter(function (m) { return !modDone(m); })[0];
+    h += '<p style="margin-top:24px">' + (next
+      ? '<a class="btn" href="#/m/' + next.id + '">' + (doneCount() ? 'Продолжить: ' : 'Начать: ') + esc(next.title) + '</a>'
+      : '<a class="btn" href="#/test">Пройти итоговый тест</a>') + '</p>';
+    view.innerHTML = h;
+  }
+
+  function stepsBar(m, cur) {
+    var h = '<div class="steps">';
+    m.lessons.forEach(function (l, i) {
+      h += '<a href="#/m/' + m.id + '/' + (i + 1) + '" class="' + (cur === i + 1 ? 'cur' : (state.seen[m.id + '.' + (i + 1)] ? 'done' : '')) + '">' + (i + 1) + '. ' + esc(l.title) + '</a>';
+    });
+    h += '<a href="#/m/' + m.id + '/quiz" class="' + (cur === 'quiz' ? 'cur' : (modDone(m) ? 'done' : '')) + '">Проверка</a></div>';
+    return h;
+  }
+
+  function lessonView(m, n) {
+    var l = m.lessons[n - 1];
+    state.seen[m.id + '.' + n] = 1; save();
+    var prev = n > 1 ? '#/m/' + m.id + '/' + (n - 1) : '#/';
+    var next = n < m.lessons.length ? '#/m/' + m.id + '/' + (n + 1) : '#/m/' + m.id + '/quiz';
+    view.innerHTML = '<div class="crumbs">Блок ' + m.id + ' &middot; ' + esc(m.title) + '</div><h1>' + esc(l.title) + '</h1>' + stepsBar(m, n) +
+      '<div class="body">' + l.html + '</div>' +
+      '<div class="pager"><a class="btn ghost" href="' + prev + '">Назад</a><a class="btn" href="' + next + '">' + (n < m.lessons.length ? 'Дальше' : 'К проверочным вопросам') + '</a></div>';
+    mountWidgets(view);
+  }
+
+  function modIntro(m) {
+    var h = '<div class="crumbs">Блок ' + m.id + '</div><h1>' + esc(m.title) + '</h1><p class="lead">' + esc(m.sub) + '</p>' + m.intro;
+    h += '<h2>Уроки</h2><ol>';
+    m.lessons.forEach(function (l, i) { h += '<li><a href="#/m/' + m.id + '/' + (i + 1) + '">' + esc(l.title) + '</a></li>'; });
+    h += '</ol><p><a class="btn" href="#/m/' + m.id + '/1">Начать</a></p>';
+    view.innerHTML = h;
+  }
+
+  function shuffle(a) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+
+  function mix(q) {
+    var idx = shuffle(q.o.map(function (_, i) { return i; }));
+    return { q: q.q, e: q.e, o: idx.map(function (i) { return q.o[i]; }), a: idx.indexOf(q.a) };
+  }
+
+  function questionHtml(q, i, qi) {
+    var h = '<div class="q" data-qi="' + qi + '"><h3>' + (i + 1) + '. ' + q.q + '</h3>';
+    q.o.forEach(function (o, k) { h += '<button type="button" class="opt" data-k="' + k + '">' + o + '</button>'; });
+    return h + '<div class="explain hid"></div></div>';
+  }
+
+  function quizView(m) {
+    var qs = m.quiz.map(mix), answered = {}, right = 0;
+    var prev = state.quiz[m.id];
+    view.innerHTML = '<div class="crumbs">Блок ' + m.id + ' &middot; ' + esc(m.title) + '</div><h1>Проверочные вопросы</h1>' + stepsBar(m, 'quiz') +
+      '<p class="lead">Отвечай по одному: после ответа сразу видно, верно ли, и почему. Для зачёта блока нужно не меньше 70%.</p>' +
+      qs.map(function (q, i) { return questionHtml(q, i, i); }).join('') + '<div id="res"></div>';
+    view.querySelectorAll('.q').forEach(function (box) {
+      var qi = +box.dataset.qi, q = qs[qi];
+      box.querySelectorAll('.opt').forEach(function (b) {
+        b.onclick = function () {
+          if (answered[qi] !== undefined) return;
+          var k = +b.dataset.k; answered[qi] = k;
+          if (k === q.a) right++;
+          box.querySelectorAll('.opt').forEach(function (x) {
+            x.disabled = true;
+            if (+x.dataset.k === q.a) x.classList.add('right');
+          });
+          if (k !== q.a) b.classList.add('wrong');
+          var ex = box.querySelector('.explain');
+          ex.innerHTML = '<b>' + (k === q.a ? 'Верно. ' : 'Не совсем. ') + '</b>' + q.e;
+          ex.classList.remove('hid');
+          if (Object.keys(answered).length === qs.length) finish();
+        };
+      });
+    });
+    function finish() {
+      var sc = right / qs.length, ok = sc >= PASS_MOD;
+      var old = state.quiz[m.id];
+      state.quiz[m.id] = { score: Math.max(sc, old ? old.score : 0), passed: ok || !!(old && old.passed) };
+      save(); renderNav(m.id);
+      var n = C.modules.indexOf(m), nx = C.modules[n + 1];
+      $('res').innerHTML = '<div class="card"><div class="score ' + (ok ? 'ok' : 'bad') + '">' + right + ' из ' + qs.length + '</div><p>' +
+        (ok ? 'Блок зачтён.' : 'Пока не хватает до порога 70%. Перечитай уроки и попробуй ещё раз.') + '</p><div class="row">' +
+        '<a class="btn ghost" href="#/m/' + m.id + '/quiz" id="retry">Пройти заново</a>' +
+        (ok ? (nx ? '<a class="btn" href="#/m/' + nx.id + '">Следующий блок: ' + esc(nx.title) + '</a>' : '<a class="btn" href="#/test">К итоговому тесту</a>') : '<a class="btn" href="#/m/' + m.id + '/1">К урокам</a>') +
+        '</div></div>';
+      $('retry').onclick = function (e) { e.preventDefault(); quizView(m); window.scrollTo(0, 0); };
+      $('res').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    if (prev && prev.passed) view.insertAdjacentHTML('afterbegin', '<div class="tip"><b>Блок уже зачтён</b>Лучший результат: ' + Math.round(prev.score * 100) + '%. Можно пройти ещё раз для повторения.</div>');
+  }
+
+  function testView() {
+    var pool = C.test.map(mix), order = shuffle(pool.map(function (_, i) { return i; }));
+    var sel = {};
+    var h = '<h1>Итоговый тест</h1><p class="lead">' + pool.length + ' вопросов по всем блокам. Ответы показываются в конце. Проходной порог &mdash; 80%.</p>';
+    var left = C.modules.filter(function (m) { return !modDone(m); });
+    if (left.length) h += '<div class="warn"><b>Не все блоки пройдены</b>Осталось: ' + left.map(function (m) { return esc(m.title); }).join(', ') + '. Тест можно сдавать и так, но лучше сначала пройти блоки.</div>';
+    if (state.test.best) h += '<div class="note"><b>Лучший результат</b>' + Math.round(state.test.best * 100) + '%' + (state.test.passed ? ' (тест сдан)' : '') + '</div>';
+    order.forEach(function (qi, i) { h += questionHtml(pool[qi], i, qi); });
+    h += '<div class="row"><button class="btn" id="submit" type="button" disabled>Завершить тест</button><span id="cnt" class="prog" style="color:#5d6b85"></span></div><div id="res"></div>';
+    view.innerHTML = h;
+    var cnt = $('cnt'), sub = $('submit');
+    function upd() { var n = Object.keys(sel).length; cnt.textContent = 'Отвечено ' + n + ' из ' + pool.length; sub.disabled = n < pool.length; }
+    upd();
+    view.querySelectorAll('.q').forEach(function (box) {
+      var qi = +box.dataset.qi;
+      box.querySelectorAll('.opt').forEach(function (b) {
+        b.onclick = function () {
+          sel[qi] = +b.dataset.k;
+          box.querySelectorAll('.opt').forEach(function (x) { x.classList.toggle('sel', x === b); });
+          upd();
+        };
+      });
+    });
+    sub.onclick = function () {
+      var right = 0, wrong = [];
+      pool.forEach(function (q, qi) { if (sel[qi] === q.a) right++; else wrong.push(qi); });
+      var sc = right / pool.length, ok = sc >= PASS_TEST;
+      state.test.best = Math.max(state.test.best, sc);
+      state.test.passed = state.test.passed || ok;
+      save(); renderNav('test');
+      var r = '<div class="card"><div class="score ' + (ok ? 'ok' : 'bad') + '">' + right + ' из ' + pool.length + ' (' + Math.round(sc * 100) + '%)</div><p>' +
+        (ok ? 'Тест сдан. Теперь можно работать с репозиториями и pull request-ами самостоятельно &mdash; а за шпаргалкой всегда можно вернуться.' : 'Порог 80% не достигнут. Разбор ошибок ниже, потом пройди тест ещё раз.') + '</p>';
+      if (wrong.length) {
+        r += '<h3>Разбор ошибок</h3>';
+        wrong.forEach(function (qi) {
+          var q = pool[qi];
+          r += '<div class="explain" style="margin-bottom:10px"><b>' + q.q + '</b><br>Твой ответ: ' + (sel[qi] === undefined ? '—' : q.o[sel[qi]]) + '<br>Верный ответ: ' + q.o[q.a] + '<br>' + q.e + '</div>';
+        });
+      }
+      r += '<p><a class="btn ghost" href="#/test" id="again">Пройти заново</a> <a class="btn" href="#/cheat">Шпаргалка</a></p></div>';
+      $('res').innerHTML = r;
+      $('again').onclick = function (e) { e.preventDefault(); testView(); window.scrollTo(0, 0); };
+      sub.disabled = true;
+      $('res').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+  }
+
+  function route() {
+    var p = (location.hash || '#/').replace(/^#\/?/, '').split('/');
+    $('side').classList.remove('open');
+    window.scrollTo(0, 0);
+    if (p[0] === 'm' && C.modules[+p[1] - 1]) {
+      var m = C.modules[+p[1] - 1];
+      renderNav(m.id);
+      if (p[2] === 'quiz') return quizView(m);
+      if (p[2] && m.lessons[+p[2] - 1]) return lessonView(m, +p[2]);
+      return modIntro(m);
+    }
+    if (p[0] === 'test') { renderNav('test'); return testView(); }
+    if (p[0] === 'cheat') { renderNav('cheat'); view.innerHTML = C.cheat; mountWidgets(view); return; }
+    renderNav('home'); homeView();
+  }
+
+  C.start = function () {
+    view = $('view'); nav = $('nav');
+    $('burger').onclick = function () { $('side').classList.toggle('open'); };
+    $('resetBtn').onclick = function () {
+      if (confirm('Сбросить весь прогресс курса?')) { localStorage.removeItem(KEY); load(); route(); }
+    };
+    window.addEventListener('hashchange', route);
+    route();
+  };
+})();
+
+</script>
+<script>
+(function () {
+  var C = window.COURSE, esc = C.esc, W = C.widgets;
+
+  function norm(s) { return s.trim().replace(/\s+/g, ' '); }
+
+  W.terminal = function (el, cfg) {
+    var i = 0, done = false, ctx = {};
+    el.innerHTML = '<div class="term"><div class="term-top"><span>' + esc(cfg.title) + '</span><span class="prog" data-p></span></div>' +
+      '<div class="term-task" data-task></div><div class="term-out" data-out></div>' +
+      '<form class="term-in" data-form><span>$</span><input data-in autocomplete="off" spellcheck="false" aria-label="Команда"><button type="button" data-hint>Подсказка</button></form></div>';
+    var out = el.querySelector('[data-out]'), inp = el.querySelector('[data-in]'), task = el.querySelector('[data-task]'), prog = el.querySelector('[data-p]');
+    function line(cls, txt) { var d = document.createElement('div'); d.className = cls; d.textContent = txt; out.appendChild(d); out.scrollTop = out.scrollHeight; }
+    function show() {
+      prog.textContent = 'Шаг ' + Math.min(i + 1, cfg.steps.length) + ' из ' + cfg.steps.length;
+      task.innerHTML = done ? '<b>Готово.</b> ' + cfg.finish : '<b>Задача:</b> ' + cfg.steps[i].task;
+    }
+    line('dim', cfg.prompt);
+    show();
+    el.querySelector('[data-hint]').onclick = function () {
+      if (!done) line('dim', 'Подсказка: ' + cfg.steps[i].hint);
+    };
+    el.querySelector('[data-form]').onsubmit = function (e) {
+      e.preventDefault();
+      var v = norm(inp.value); inp.value = '';
+      if (!v) return;
+      line('cmd', cfg.ps + ' ' + v);
+      if (done) { line('dim', 'Сценарий завершён. Обнови страницу уроком выше, чтобы пройти заново.'); return; }
+      var s = cfg.steps[i], m = s.re.exec(v);
+      if (m && s.check) {
+        var bad = s.check(v, m, ctx);
+        if (bad) { line('err', bad); return; }
+      }
+      if (m) {
+        var o = typeof s.out === 'function' ? s.out(m, ctx) : s.out;
+        o.split('\n').forEach(function (t) { line('', t); });
+        i++;
+        if (i >= cfg.steps.length) done = true;
+        show();
+      } else if (/^(git|gh)\b/.test(v)) {
+        line('err', 'Команда допустима, но не подходит к текущей задаче сценария. ' + (s.wrong || 'Перечитай задачу или нажми «Подсказка».'));
+      } else {
+        line('err', 'bash: ' + v.split(' ')[0] + ': в этом тренажёре работают только команды git и gh.');
+      }
+    };
+  };
+
+  W.web = function (el, cfg) {
+    var i = 0, done = false, ctx = {};
+    el.innerHTML = '<div class="web"><div class="web-top"><span class="web-url" data-url></span><span class="prog" data-p></span></div>' +
+      '<div class="web-task" data-task></div><div class="web-page" data-page></div>' +
+      '<div class="web-act" data-act></div><div class="web-msg hid" data-msg></div>' +
+      '<div class="web-foot"><button type="button" class="btn ghost" data-hint>Подсказка</button></div></div>';
+    var url = el.querySelector('[data-url]'), prog = el.querySelector('[data-p]'), task = el.querySelector('[data-task]'),
+      page = el.querySelector('[data-page]'), act = el.querySelector('[data-act]'), msg = el.querySelector('[data-msg]');
+    function say(cls, html) { msg.className = 'web-msg ' + cls; msg.innerHTML = html; }
+    function val(x) { return typeof x === 'function' ? x(ctx) : x; }
+    function next(okText) {
+      i++;
+      if (i >= cfg.steps.length) done = true;
+      show();
+      if (okText) say('ok', okText);
+    }
+    function show() {
+      msg.className = 'web-msg hid';
+      prog.textContent = 'Шаг ' + Math.min(i + 1, cfg.steps.length) + ' из ' + cfg.steps.length;
+      if (done) {
+        task.innerHTML = '<b>Готово.</b> ' + cfg.finish;
+        act.innerHTML = '';
+        el.querySelector('[data-hint]').classList.add('hid');
+        return;
+      }
+      var s = cfg.steps[i];
+      url.textContent = val(s.url);
+      task.innerHTML = '<b>Задача:</b> ' + val(s.task);
+      page.innerHTML = val(s.view);
+      act.innerHTML = '';
+      if (s.input) {
+        var f = document.createElement('form');
+        f.className = 'web-form';
+        f.innerHTML = '<label>' + s.input.label + '<input autocomplete="off" spellcheck="false" placeholder="' + esc(s.input.ph || '') + '"></label><button type="submit" class="btn">' + (s.input.btn || 'Продолжить') + '</button>';
+        f.onsubmit = function (e) {
+          e.preventDefault();
+          var v = norm(f.querySelector('input').value);
+          if (!s.input.re.test(v)) { say('bad', s.input.wrong); return; }
+          ctx[s.input.key] = v;
+          next(s.input.ok);
+        };
+        act.appendChild(f);
+      } else {
+        var order = s.choices.map(function (c, k) { return { c: c, k: k }; });
+        order.sort(function () { return Math.random() - 0.5; });
+        order.forEach(function (o) {
+          var b = document.createElement('button');
+          b.type = 'button'; b.className = 'web-btn'; b.innerHTML = o.c.t;
+          b.onclick = function () {
+            if (o.c.ok) next(o.c.msg); else say('bad', o.c.msg);
+          };
+          act.appendChild(b);
+        });
+      }
+    }
+    el.querySelector('[data-hint]').onclick = function () {
+      if (!done) say('dim', 'Подсказка: ' + val(cfg.steps[i].hint));
+    };
+    show();
+  };
+
+  W.skillfile = function (el, cfg) {
+    el.innerHTML = '<div class="card"><p><b>' + esc(cfg.title) + '</b></p><pre><code>' + esc(cfg.text) + '</code></pre>' +
+      '<div class="row"><button type="button" class="btn" data-copy>Скопировать</button><button type="button" class="btn ghost" data-dl>Скачать ' + esc(cfg.file) + '</button><span data-res></span></div></div>';
+    var res = el.querySelector('[data-res]');
+    el.querySelector('[data-copy]').onclick = function () {
+      var ok = function () { res.textContent = 'Скопировано'; };
+      var fb = function () {
+        var t = document.createElement('textarea'); t.value = cfg.text; document.body.appendChild(t); t.select();
+        try { document.execCommand('copy'); ok(); } catch (e) { res.textContent = 'Не удалось скопировать, выделите текст вручную'; }
+        document.body.removeChild(t);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(cfg.text).then(ok, fb); else fb();
+    };
+    el.querySelector('[data-dl]').onclick = function () {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([cfg.text], { type: 'text/markdown;charset=utf-8' }));
+      a.download = cfg.file; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      res.textContent = 'Файл скачан';
+    };
+  };
+
+  W.classify = function (el, cfg) {
+    var h = '<div class="card"><p><b>' + cfg.title + '</b></p>';
+    cfg.items.forEach(function (it, k) {
+      h += '<div class="cls"><div>' + it.t + '</div><select data-k="' + k + '"><option value="">— выбери —</option>' +
+        cfg.cats.map(function (c, ci) { return '<option value="' + ci + '">' + esc(c) + '</option>'; }).join('') + '</select><div class="m" data-m="' + k + '"></div></div>';
+    });
+    h += '<div class="row"><button type="button" class="btn" data-check>Проверить</button><span data-res></span></div><div class="explain hid" data-ex></div></div>';
+    el.innerHTML = h;
+    el.querySelector('[data-check]').onclick = function () {
+      var ok = 0, empty = 0;
+      cfg.items.forEach(function (it, k) {
+        var v = el.querySelector('select[data-k="' + k + '"]').value, m = el.querySelector('[data-m="' + k + '"]');
+        if (v === '') { empty++; m.textContent = ''; m.className = 'm'; return; }
+        var good = +v === it.a;
+        if (good) ok++;
+        m.textContent = good ? '✓' : '✗'; m.className = 'm ' + (good ? 'ok' : 'bad');
+      });
+      el.querySelector('[data-res]').textContent = empty ? 'Заполни все строки' : 'Верно ' + ok + ' из ' + cfg.items.length;
+      if (!empty) { var ex = el.querySelector('[data-ex]'); ex.innerHTML = cfg.explain; ex.classList.remove('hid'); }
+    };
+  };
+
+  W.order = function (el, cfg) {
+    var arr = cfg.items.map(function (t, i) { return { t: t, i: i }; });
+    do { arr.sort(function () { return Math.random() - 0.5; }); } while (arr.every(function (x, p) { return x.i === p; }));
+    function draw(mark) {
+      var h = '<div class="card"><p><b>' + cfg.title + '</b></p><ul class="ord">';
+      arr.forEach(function (x, p) {
+        var cls = mark ? (x.i === p ? 'ok' : 'bad') : '';
+        h += '<li class="' + cls + '"><span>' + x.t + '</span><button type="button" data-up="' + p + '" aria-label="Выше">↑</button><button type="button" data-dn="' + p + '" aria-label="Ниже">↓</button></li>';
+      });
+      h += '</ul><div class="row"><button type="button" class="btn" data-check>Проверить порядок</button><span data-res></span></div>' +
+        '<div class="explain hid" data-ex>' + cfg.explain + '</div></div>';
+      el.innerHTML = h;
+      el.querySelectorAll('[data-up]').forEach(function (b) { b.onclick = function () { mv(+b.dataset.up, -1); }; });
+      el.querySelectorAll('[data-dn]').forEach(function (b) { b.onclick = function () { mv(+b.dataset.dn, 1); }; });
+      el.querySelector('[data-check]').onclick = function () {
+        var ok = arr.every(function (x, p) { return x.i === p; });
+        draw(true);
+        el.querySelector('[data-res]').textContent = ok ? 'Порядок верный' : 'Есть ошибки: зелёные строки на месте, красные нет';
+        if (ok) el.querySelector('[data-ex]').classList.remove('hid');
+      };
+    }
+    function mv(p, d) {
+      var q = p + d; if (q < 0 || q >= arr.length) return;
+      var t = arr[p]; arr[p] = arr[q]; arr[q] = t; draw(false);
+    }
+    draw(false);
+  };
+
+})();
+
+</script>
+<script>
+COURSE.modules.push({
+  id: 1, min: 10,
+  title: 'Зачем это нужно',
+  sub: 'Чем мы занимаемся и какую проблему решает GitHub',
+  intro: '<p>В этом блоке без единой команды: разберёмся, что такое Git и GitHub, зачем они нужны именно нам и как называются основные вещи.</p>',
+  lessons: [
+    {
+      title: 'Чем мы занимаемся',
+      html: '<p>Флайск делает продукты для работы с CRM и бизнес-сервисами: интеграции, платформу, лендинги, внутренние инструменты и базы знаний для клиентов.</p>' +
+        '<p>Всё это &mdash; <b>файлы</b>: код, тексты, конфиги, регламенты. Над ними одновременно работает несколько человек и ИИ-ассистент (Claude Code). Файлы нужно где-то хранить, не терять версии, не затирать чужую работу и уметь отвечать на вопрос «кто, когда и зачем это изменил».</p>' +
+        '<div class="note"><b>Где что живёт у нас</b>Регламенты, инструкции и онбординг &mdash; в <b>Platrum</b> (wiki). Код и версионируемые документы &mdash; в <b>GitHub</b>, в организации <code>flysk-tech</code>. Это не соперники: Platrum &mdash; для людей, GitHub &mdash; для всего, что меняется версиями и проходит ревью.</div>' +
+        '<h3>Кому это нужно</h3><ul><li><b>Разработчикам</b> &mdash; код всех продуктов лежит в репозиториях.</li><li><b>Маркетингу, продажам, проектным менеджерам</b> &mdash; есть репозитории маркетинга, продаж, проектного управления и общей базы знаний: тексты, материалы и процессы под теми же правилами.</li><li><b>Тем, кто ведёт клиентов</b> &mdash; например, база знаний клиента <code>client-kb</code>.</li></ul>' +
+        '<p>Поэтому курс написан для тех, кто ни разу не открывал GitHub.</p>'
+    },
+    {
+      title: 'Проблема, которую решает Git',
+      html: '<p>Знакомая ситуация: файлы <code>договор_финал.docx</code>, <code>договор_финал2.docx</code>, <code>договор_финал_правки_Ани_точно_последний.docx</code>. Непонятно, какой настоящий, кто что менял и как вернуть то, что было вчера.</p>' +
+        '<h3>Git &mdash; это история изменений</h3><p><b>Git</b> &mdash; программа на вашем компьютере. Она запоминает каждое сохранённое изменение папки как «снимок» с подписью: кто, когда и что сделал. К любому снимку можно вернуться.</p>' +
+        '<h3>GitHub &mdash; общее место для этой истории</h3><p><b>GitHub</b> &mdash; сайт, где хранится общая копия проекта и где команда договаривается об изменениях: обсуждает, проверяет, одобряет. Git и GitHub &mdash; не одно и то же: Git умеет вести историю и без интернета, GitHub добавляет командную работу.</p>' +
+        '<table><tr><th></th><th>Git</th><th>GitHub</th></tr><tr><td>Что это</td><td>Программа</td><td>Веб-сервис</td></tr><tr><td>Где работает</td><td>На вашем компьютере</td><td>В интернете, github.com</td></tr><tr><td>Что умеет</td><td>История, ветки, снимки</td><td>Общий доступ, pull request, обсуждения, проверки</td></tr></table>' +
+        '<div data-w="classify" data-id="c1"></div>'
+    },
+    {
+      title: 'Словарь: 12 слов, которых хватит',
+      html: '<p>Не нужно учить всё сразу. Эти слова вы будете слышать каждый день.</p>' +
+        '<table><tr><th>Слово</th><th>Что значит простыми словами</th></tr>' +
+        '<tr><td><b>Репозиторий</b> (репо)</td><td>Папка проекта вместе со всей историей изменений. У нас на GitHub их несколько десятков.</td></tr>' +
+        '<tr><td><b>Коммит</b> (commit)</td><td>Один сохранённый «снимок» изменений с подписью, что сделано.</td></tr>' +
+        '<tr><td><b>Ветка</b> (branch)</td><td>Параллельная копия линии истории, чтобы править, не мешая остальным.</td></tr>' +
+        '<tr><td><b>main</b></td><td>Главная ветка. Считается «чистовиком» проекта.</td></tr>' +
+        '<tr><td><b>Pull request</b> (PR)</td><td>Предложение: «возьмите мои изменения из ветки в main». Здесь их читают, обсуждают и одобряют.</td></tr>' +
+        '<tr><td><b>Merge</b></td><td>Слияние: изменения из ветки попадают в main.</td></tr>' +
+        '<tr><td><b>Clone</b></td><td>Скачать репозиторий к себе на компьютер с историей.</td></tr>' +
+        '<tr><td><b>Pull</b></td><td>Подтянуть к себе свежие изменения с GitHub.</td></tr>' +
+        '<tr><td><b>Push</b></td><td>Отправить свои коммиты на GitHub.</td></tr>' +
+        '<tr><td><b>Issue</b></td><td>Задача или обсуждение внутри репозитория.</td></tr>' +
+        '<tr><td><b>Review</b></td><td>Проверка изменений коллегой до слияния.</td></tr>' +
+        '<tr><td><b>Организация</b></td><td>Общий аккаунт компании. У нас это <code>flysk-tech</code>.</td></tr></table>' +
+        '<div class="tip"><b>Запомнить одно</b>Прямая линия: <b>ветка &rarr; коммиты &rarr; pull request &rarr; проверка &rarr; merge в main</b>. Всё остальное &mdash; детали этой цепочки.</div>'
+    }
+  ],
+  quiz: [
+    { q: 'Что из этого верно про Git и GitHub?', o: ['Это два названия одного и того же', 'Git &mdash; программа для истории изменений, GitHub &mdash; сервис для командной работы вокруг неё', 'Git &mdash; сайт, GitHub &mdash; программа на компьютере', 'GitHub работает только без интернета'], a: 1, e: 'Git ведёт историю локально, GitHub хранит общую копию и добавляет pull request, проверки и обсуждения.' },
+    { q: 'Где у нас хранятся регламенты и онбординг для людей?', o: ['Только в GitHub', 'В Platrum (wiki), а в GitHub &mdash; код и версионируемые документы', 'В личных папках сотрудников', 'В переписке в чатах'], a: 1, e: 'Platrum &mdash; для людей, GitHub &mdash; для того, что меняется версиями и проходит ревью. Они дополняют друг друга.' },
+    { q: 'Что такое коммит?', o: ['Удаление репозитория', 'Сохранённый снимок изменений с подписью', 'Название главной ветки', 'Комментарий в чате'], a: 1, e: 'Коммит фиксирует состояние файлов и подпись: что и зачем изменено.' },
+    { q: 'Зачем нужен pull request?', o: ['Чтобы скачать проект', 'Чтобы предложить изменения из ветки в main и дать коллегам их проверить', 'Чтобы удалить ветку', 'Чтобы создать новую организацию'], a: 1, e: 'PR &mdash; место, где изменения обсуждают и одобряют до попадания в main.' },
+    { q: 'Нужен ли GitHub людям, которые не пишут код (маркетинг, ПМ, ведение клиентов)?', o: ['Нет, он только для программистов', 'Да: у нас в репозиториях лежат и тексты, и процессы, и базы знаний клиентов', 'Только для директора', 'Только для тех, кто работает с серверами'], a: 1, e: 'Репозитории маркетинга, продаж, проектного управления, общей базы знаний и баз знаний клиентов &mdash; не код, а материалы и процессы.' }
+  ]
+});
+COURSE.data.c1 = {
+  title: 'Разложи по местам: где это происходит?',
+  cats: ['Git (на компьютере)', 'GitHub (в интернете)'],
+  items: [
+    { t: 'Сохранить снимок изменений (commit)', a: 0 },
+    { t: 'Обсудить изменения в pull request', a: 1 },
+    { t: 'Посмотреть историю файла без интернета', a: 0 },
+    { t: 'Поставить коллегу ревьюером', a: 1 },
+    { t: 'Создать ветку', a: 0 }
+  ],
+  explain: 'Коммиты, ветки и история &mdash; это Git и работают локально. Ревьюеры, обсуждения и pull request-ы &mdash; возможности GitHub.'
+};
+
+</script>
+<script>
+COURSE.modules.push({
+  id: 2, min: 20,
+  title: 'Основы: репозиторий, коммит, ветка, PR',
+  sub: 'Четыре понятия, на которых держится вся работа',
+  intro: '<p>Главный блок курса. После него вы сможете прочитать любой репозиторий на GitHub, понять, что в нём происходит, и объяснить, как изменение попадает в main.</p>',
+  lessons: [
+    {
+      title: 'Страница репозитория',
+      html: '<p>Откройте любой репозиторий организации, например <code>github.com/flysk-tech/client-kb</code>. Вверху есть вкладки, нужны четыре:</p>' +
+        '<table><tr><th>Вкладка</th><th>Для чего</th></tr>' +
+        '<tr><td><b>Code</b></td><td>Файлы и папки. Внизу под ними показывается <code>README.md</code> &mdash; «обложка» проекта: что это и как с ним работать.</td></tr>' +
+        '<tr><td><b>Issues</b></td><td>Задачи и обсуждения.</td></tr>' +
+        '<tr><td><b>Pull requests</b></td><td>Предложенные изменения: открытые, на проверке, влитые.</td></tr>' +
+        '<tr><td><b>Actions</b></td><td>Автоматические проверки и сборки: тесты, линтер, деплой.</td></tr></table>' +
+        '<div class="note"><b>Нет доступа?</b>Если репозиторий открывается с ошибкой 404, у вас пока нет доступа к организации <code>flysk-tech</code>. Запросите его у Антона.</div><h3>Что стоит делать в первый день</h3><ol><li>Открыть <code>README.md</code> нужного репозитория и прочитать целиком.</li><li>Нажать на «N commits» над списком файлов &mdash; увидеть историю.</li><li>Открыть любой файл и нажать <b>History</b> или <b>Blame</b> &mdash; увидеть, кто и когда менял каждую строку.</li></ol>' +
+        '<div class="note"><b>Публичные и приватные</b>Почти все наши репозитории <b>private</b> &mdash; видны только участникам организации. Публичных единицы: их видит весь интернет. Поэтому в публичный репозиторий нельзя класть ничего внутреннего. Подробнее в блоке про безопасность.</div>'
+    },
+    {
+      title: 'Коммит: снимок с подписью',
+      html: '<p>Коммит &mdash; единица истории. Хороший коммит отвечает на вопрос «что и зачем изменено» и делает <b>одну</b> логическую вещь.</p>' +
+        '<h3>Как подписываем у нас</h3><p>В наших репозиториях принят формат <code>тип(область): суть</code>. Примеры:</p>' +
+        '<pre><code>fix(billing): correct subscription period, upgrade application\nfeat(console): install:activate for development\nchore: удалить мёртвый метод test() из базового Controller\ndocs: описать запуск в README</code></pre>' +
+        '<table><tr><th>Тип</th><th>Когда</th></tr><tr><td><code>feat</code></td><td>новая возможность</td></tr><tr><td><code>fix</code></td><td>исправление ошибки</td></tr><tr><td><code>chore</code></td><td>уборка, зависимости, рутина</td></tr><tr><td><code>docs</code></td><td>документы и тексты</td></tr><tr><td><code>release</code></td><td>выпуск версии</td></tr></table>' +
+        '<p>Язык подписи свободный: встречаются и русские, и английские, главное &mdash; понятно и коротко.</p>' +
+        '<div data-w="classify" data-id="c2"></div>'
+    },
+    {
+      title: 'Ветки',
+      html: '<p>Представьте главу в книге, которую читают все. Вы хотите переписать абзац, но пока не уверены. Берёте копию главы, правите её, показываете коллегам &mdash; и только потом заменяете в книге. Ветка &mdash; это такая копия.</p>' +
+        '<ul><li><b>main</b> &mdash; всегда «рабочая» версия. В нём не должно быть недоделок.</li><li>Новая работа &mdash; в новой ветке, отходящей от main.</li><li>Когда работа проверена &mdash; ветка вливается (merge) в main и больше не нужна.</li></ul>' +
+        '<h3>Имена веток</h3><p>Имя ветки повторяет тип коммита и коротко описывает суть. Из реальных:</p>' +
+        '<pre><code>feat/wallet-tx-entity-link\nfix/invoice-amount-display\nchore/remove-dead-controller-test\nrelease/flysense-v1</code></pre>' +
+        '<p>Формат: <code>тип/кратко-через-дефис</code>, латиницей, без пробелов.</p>' +
+        '<div class="warn"><b>Не работаем прямо в main</b>Даже если «там всего одна запятая». Правка через ветку и PR оставляет след: кто, зачем и кто проверил.</div>'
+    },
+    {
+      title: 'Pull request и ревью',
+      html: '<p>PR &mdash; это страница, где ваша ветка предлагается к слиянию. На ней:</p>' +
+        '<ul><li><b>Название и описание</b> &mdash; что сделано и зачем. Название обычно = подпись главного коммита.</li><li><b>Files changed</b> &mdash; красным удалённое, зелёным добавленное.</li><li><b>Комментарии</b> к строкам и общие обсуждения.</li><li><b>Checks</b> &mdash; автоматические проверки (если настроены).</li><li><b>Reviewers</b> &mdash; кого просим проверить.</li></ul>' +
+        '<h3>Жизнь PR</h3><ol><li><b>Open</b> &mdash; открыт, идёт обсуждение.</li><li>Ревьюер читает, пишет комментарии или нажимает <b>Approve</b>.</li><li>Автор исправляет, коммиты автоматически добавляются в тот же PR.</li><li><b>Merge</b> &mdash; влит в main. Обычно мы используем <b>squash</b>: все коммиты ветки сжимаются в один аккуратный.</li><li>Ветку можно удалить кнопкой <b>Delete branch</b>.</li></ol>' +
+        '<h3>Ревью: как читать чужое</h3><ul><li>Понятно ли, что и зачем меняется?</li><li>Нет ли лишнего: паролей, личных данных, случайных файлов?</li><li>Если сомневаетесь &mdash; спросите комментарием. Это нормально.</li></ul>' +
+        '<div data-w="order" data-id="o2"></div>'
+    }
+  ],
+  quiz: [
+    { q: 'Какая подпись коммита соответствует нашему стилю?', o: ['правки', 'fix(billing): correct subscription period', 'Final_v2', 'сделал как просили'], a: 1, e: 'Формат «тип(область): суть» сразу показывает, что и где изменено.' },
+    { q: 'Что такое main?', o: ['Личная ветка автора', 'Главная ветка с рабочей версией проекта', 'Название организации', 'Папка с настройками'], a: 1, e: 'main &mdash; основная линия. Новая работа идёт в отдельных ветках и вливается в main после ревью.' },
+    { q: 'Какое имя ветки составлено правильно?', o: ['Моя новая ветка!!!', 'fix/invoice-amount-display', 'fix invoice', 'ВАЖНОЕ'], a: 1, e: 'Тип, косая черта, краткое описание латиницей через дефис.' },
+    { q: 'Что делает squash merge?', o: ['Удаляет репозиторий', 'Сжимает все коммиты ветки в один при слиянии в main', 'Отменяет PR', 'Копирует ветку'], a: 1, e: 'История main остаётся аккуратной: один PR &mdash; один коммит.' },
+    { q: 'Вы нашли опечатку в README. Как правильно?', o: ['Молча поправить прямо в main', 'Создать ветку, поправить, открыть PR и попросить коллегу проверить', 'Написать в чат и ничего не делать', 'Удалить README'], a: 1, e: 'Любая правка идёт через ветку и PR, даже мелкая. Так остаётся след и проверка.' },
+    { q: 'Где посмотреть, кто и когда изменил конкретную строку файла?', o: ['На вкладке Actions', 'Через Blame или History у файла', 'В настройках организации', 'Это невозможно'], a: 1, e: 'Blame показывает автора и коммит для каждой строки.' }
+  ]
+});
+COURSE.data.c2 = {
+  title: 'Хорошая подпись коммита или плохая?',
+  cats: ['Хорошая', 'Плохая'],
+  items: [
+    { t: '<code>feat(console): install:activate for development</code>', a: 0 },
+    { t: '<code>правки</code>', a: 1 },
+    { t: '<code>docs(contacts): добавить контакты отдела продаж клиента</code>', a: 0 },
+    { t: '<code>asdf</code>', a: 1 },
+    { t: '<code>fix: исправил всё что просили и ещё пару вещей заодно</code>', a: 1 }
+  ],
+  explain: 'Хорошая подпись короткая, с типом и областью, и описывает одну вещь. «Всё и заодно» &mdash; признак, что в один коммит попало несколько разных задач.'
+};
+COURSE.data.o2 = {
+  title: 'Расставь шаги так, как изменение попадает в main',
+  items: [
+    'Создать ветку от свежего main',
+    'Внести изменения и сделать коммит',
+    'Отправить ветку на GitHub (push)',
+    'Открыть pull request',
+    'Коллега проверяет и одобряет (review)',
+    'Влить в main (merge)'
+  ],
+  explain: 'Это тот самый конвейер из первого блока. В блоке 3 вы пройдёте его руками в тренажёре.'
+};
+
+</script>
+<script>
+COURSE.modules.push({
+  id: 3, min: 30,
+  title: 'Практика: путь изменения до main',
+  sub: 'Всё в браузере на github.com. Терминал нужен не всем и вынесен в конец',
+  intro: '<p>Теория закончилась. Здесь вы пройдёте весь путь изменения руками, и всё это делается в <b>браузере на сайте github.com</b>: ничего устанавливать не нужно, достаточно аккаунта и доступа к организации. Терминал разобран в последнем уроке для тех, кому он пригодится.</p>',
+  lessons: [
+    {
+      title: 'Вход и устройство страницы репозитория',
+      html: '<h3>Что нужно, чтобы начать</h3>' +
+        '<ol><li><b>Личный аккаунт GitHub</b> с двухфакторной защитой (2FA). Регистрация на <a href="https://github.com">github.com</a>. Общие логины не используем.</li>' +
+        '<li><b>Доступ к организации</b> <code>flysk-tech</code>. Его нужно запросить у Антона: напишите ему ваш логин на GitHub, он отправит приглашение. Примите его по ссылке из письма.</li>' +
+        '<li>Больше ничего: ни Git, ни терминал, ни программы для этого не нужны.</li></ol>' +
+        '<div class="note"><b>Страница даёт 404?</b>Приватный репозиторий без доступа выглядит как «страница не найдена». Это не поломка: значит, вам ещё не выдали права. Запросите их у Антона.</div>' +
+        '<h3>Как устроена страница репозитория</h3>' +
+        '<table><tr><th>Что вы видите</th><th>Для чего это</th></tr>' +
+        '<tr><td>Вкладка <b>Code</b></td><td>Файлы и папки. Здесь вы читаете и правите документы.</td></tr>' +
+        '<tr><td>Выпадающий список с названием ветки (обычно <b>main</b>)</td><td>Переключатель веток. Перед правкой посмотрите, на какой вы ветке.</td></tr>' +
+        '<tr><td>Вкладка <b>Pull requests</b></td><td>Предложенные изменения: ваши, чужие, ждущие ревью.</td></tr>' +
+        '<tr><td>Вкладка <b>Issues</b></td><td>Задачи и обсуждения, если команда ими пользуется.</td></tr>' +
+        '<tr><td>Вкладка <b>Actions</b></td><td>Автоматические проверки и их результаты.</td></tr>' +
+        '<tr><td>Ниже списка файлов <b>README</b></td><td>«Обложка» репозитория: что это и по каким правилам тут работаем. Читайте первым.</td></tr>' +
+        '<tr><td>Ссылка <b>History</b> у файла или список коммитов</td><td>Кто, когда и что менял.</td></tr>' +
+        '<tr><td>Колокольчик и значок почты вверху</td><td>Уведомления: вас просят о ревью, ответили на комментарий.</td></tr></table>' +
+        '<div class="tip"><b>Правило, которое действует и в браузере</b>Браузер не отменяет правил: правка идёт через ветку, pull request и ревью. Просто всё это делается кнопками.</div>'
+    },
+    {
+      title: 'Тренажёр в браузере: добавляем контакты клиента',
+      html: '<p><b>Ситуация.</b> В репозитории <code>client-kb</code> (база знаний условного клиента) есть файл <code>docs/00-about-client/contacts.md</code>. Вы получили от клиента телефон и почту ответственного и должны внести их. По правилам репозитория: изменения только через ветку и pull request.</p>' +
+        '<p>Тренажёр повторяет экраны GitHub. Читайте задачу и нажимайте нужную кнопку или заполняйте поле. Если выбрали не то, вы увидите объяснение, ничего не сломается.</p>' +
+        '<div data-w="web" data-id="w4"></div>' +
+        '<h3>Запомните порядок</h3>' +
+        '<div data-w="order" data-id="o4"></div>'
+    },
+    {
+      title: 'Ревью и слияние: что делать другому человеку',
+      html: '<p>Вы часто будете не автором, а проверяющим. Всё делается на странице pull request.</p>' +
+        '<h3>Как проверить чужой PR</h3>' +
+        '<ol><li>Откройте письмо или значок уведомлений, перейдите в PR. Прочитайте название и описание на вкладке <b>Conversation</b>.</li>' +
+        '<li>Откройте вкладку <b>Files changed</b>. Зелёные строки добавлены, красные удалены.</li>' +
+        '<li>Чтобы оставить замечание к строке, наведите на неё курсор и нажмите синий плюс. Напишите комментарий и нажмите <b>Start a review</b> (или <b>Add single comment</b>).</li>' +
+        '<li>Чтобы предложить конкретную правку текста, в комментарии нажмите значок <b>Add a suggestion</b>. Автор увидит исправление и применит его одной кнопкой <b>Commit suggestion</b>.</li>' +
+        '<li>Нажмите <b>Review changes</b> справа вверху и выберите итог: <b>Comment</b> (просто заметки), <b>Approve</b> (всё хорошо), <b>Request changes</b> (нужны правки). Затем <b>Submit review</b>.</li></ol>' +
+        '<h3>Если вас просят поправить</h3>' +
+        '<p>Откройте тот же файл <b>в той же ветке</b> (выберите её в списке веток), внесите правку и сохраните коммит в эту ветку. Новый PR создавать не нужно: существующий обновится сам. Ответьте на комментарий: «поправил» или объясните, почему оставили.</p>' +
+        '<h3>Слияние</h3>' +
+        '<ol><li>Убедитесь, что в блоке слияния есть одобрение (<b>Approve</b>) и проверки зелёные (если они есть).</li>' +
+        '<li>Нажмите стрелку рядом с зелёной кнопкой и выберите <b>Squash and merge</b>, затем <b>Confirm squash and merge</b>.</li>' +
+        '<li>Нажмите <b>Delete branch</b>: ветка свою работу сделала.</li></ol>' +
+        '<div class="warn"><b>Если влили не то</b>Не пытайтесь исправлять историю. На странице влитого PR нажмите <b>Revert</b>: GitHub создаст новый PR, который отменяет изменения. Его нужно пройти тем же путём: ревью, слияние.</div>' +
+        '<div class="note"><b>Что делать, если кнопка серая</b>Если слияние заблокировано, GitHub напишет причину: нет одобрения, не прошли проверки или есть конфликт. Конфликт решается кнопкой <b>Resolve conflicts</b> (разобрано в следующем уроке).</div>'
+    },
+    {
+      title: 'Что ещё делается в браузере',
+      html: '<p>Почти всё, что нужно менеджеру, делается прямо на сайте.</p>' +
+        '<table><tr><th>Задача</th><th>Как сделать</th></tr>' +
+        '<tr><td>Создать новый файл</td><td>На вкладке Code: <b>Add file &rarr; Create new file</b>. Чтобы файл лёг в папку, впишите в поле имени путь через косую черту, например <code>docs/notes/meeting.md</code>: нужные папки создадутся сами. Дальше тот же коммит в новую ветку и PR.</td></tr>' +
+        '<tr><td>Загрузить готовые файлы</td><td><b>Add file &rarr; Upload files</b>, затем перетащите файлы в окно. Коммит снова в новую ветку.</td></tr>' +
+        '<tr><td>Переименовать файл</td><td>Откройте файл, нажмите карандаш и измените имя в поле над текстом.</td></tr>' +
+        '<tr><td>Удалить файл</td><td>На странице файла меню <b>&hellip;</b> &rarr; <b>Delete file</b>. Тоже через новую ветку и PR.</td></tr>' +
+        '<tr><td>Увидеть, что менялось в файле</td><td>Кнопка <b>History</b> на странице файла: список изменений с датами и авторами.</td></tr>' +
+        '<tr><td>Узнать, кто написал строку</td><td>Кнопка <b>Blame</b> на странице файла: рядом с каждой строкой автор и дата.</td></tr>' +
+        '<tr><td>Найти нужное</td><td>Строка поиска вверху страницы ищет по всем репозиториям, к которым у вас есть доступ. Клавиша <code>t</code> на странице репозитория ищет файл по имени, клавиша <code>/</code> переходит в поиск.</td></tr>' +
+        '<tr><td>Править несколько файлов сразу</td><td>Нажмите клавишу <code>.</code> (точка) на странице репозитория: откроется веб-редактор, похожий на программу для кода. Правьте файлы, затем в левой панели Source Control введите подпись и выберите коммит в новую ветку.</td></tr>' +
+        '<tr><td>Показать работу заранее</td><td>На странице создания PR нажмите стрелку рядом с зелёной кнопкой и выберите <b>Create draft pull request</b>. Позже кнопкой <b>Ready for review</b> можно позвать на проверку.</td></tr>' +
+        '<tr><td>Решить конфликт</td><td>Если PR показывает «This branch has conflicts», нажмите <b>Resolve conflicts</b>. В редакторе найдите метки <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>, оставьте нужный текст, удалите метки и нажмите <b>Mark as resolved</b>, затем <b>Commit merge</b>.</td></tr>' +
+        '<tr><td>Подписаться на уведомления</td><td>Кнопка <b>Watch</b> в правом верхнем углу репозитория. Лишнее отключайте, чтобы важное не тонуло.</td></tr>' +
+        '<tr><td>Найти PR, которые ждут вас</td><td>Вкладка Pull requests и в поле фильтра <code>is:open review-requested:@me</code>.</td></tr></table>' +
+        '<div class="warn"><b>Всегда проверяйте выбор в окне Commit changes</b>Там по умолчанию может быть выбран вариант «Commit directly to the main branch». Он обходит ревью. Нужен вариант с новой веткой и pull request.</div>' +
+        '<div class="tip"><b>Когда браузера мало</b>Нужно изменить десятки файлов, запустить проверки у себя, переименовать структуру папок. Для этого есть терминал или Claude Code (блок 5), но большинству менеджеров они не понадобятся.</div>' +
+        '<div data-w="classify" data-id="c4"></div>'
+    },
+    {
+      title: 'Дополнительно: то же самое в терминале',
+      html: '<div class="note"><b>Этот урок необязательный</b>Всё, что описано выше, делается в браузере. Терминал нужен тем, кто работает с кодом локально. Если вы не собираетесь им пользоваться, пропустите урок и переходите к квизу.</div>' +
+        '<h3>Что нужно поставить</h3>' +
+        '<ol><li><b>Git</b> &mdash; программа с историей. Windows: <a href="https://git-scm.com/download/win">git-scm.com</a>, macOS: <code>brew install git</code>.</li>' +
+        '<li><b>GitHub CLI (gh)</b> &mdash; команда <code>gh</code> для работы с GitHub из терминала. Установщик на <a href="https://cli.github.com">cli.github.com</a>, на Mac <code>brew install gh</code>.</li></ol>' +
+        '<h3>Первый вход</h3><pre><code>gh auth login        # откроет браузер, войдите и разрешите доступ\ngit config --global user.name  "Имя Фамилия"\ngit config --global user.email "you@company.ru"\n\ngh repo clone flysk-tech/client-kb\ncd client-kb</code></pre>' +
+        '<div class="note"><b>Что произошло</b>Команда clone создала у вас папку <code>client-kb</code> со всеми файлами и всей историей. Это ваша локальная копия, привязанная к GitHub (у неё имя <code>origin</code>).</div>' +
+        '<div class="warn"><b>Токены</b>Если сайт или инструкция просит создать токен доступа (Personal Access Token), сохраните его только в менеджере паролей и в нужном конфиге. Никогда не отправляйте токен в чат и не коммитьте.</div>' +
+        '<h3>Тренажёр терминала: тот же сценарий</h3>' +
+        '<p>Вводите команды и нажимайте Enter. Если не знаете, что делать, нажмите «Подсказка». Тренажёр только имитирует Git и ничего не трогает на вашем компьютере.</p>' +
+        '<div data-w="terminal" data-id="t4"></div>' +
+        '<h3>Что вы только что сделали</h3><table><tr><th>Команда</th><th>Аналог в браузере</th></tr>' +
+        '<tr><td><code>git pull</code></td><td>В браузере main всегда свежий, обновлять нечего.</td></tr>' +
+        '<tr><td><code>git switch -c ветка</code></td><td>Вариант «Create a new branch for this commit».</td></tr>' +
+        '<tr><td><code>git status</code></td><td>Список изменений в окне Commit changes и на вкладке Files changed.</td></tr>' +
+        '<tr><td><code>git add файл</code> и <code>git commit -m "..."</code></td><td>Кнопка Commit changes с подписью.</td></tr>' +
+        '<tr><td><code>git push -u origin ветка</code></td><td>Не нужен: браузер сразу сохраняет в GitHub.</td></tr>' +
+        '<tr><td><code>gh pr create</code></td><td>Кнопка Create pull request.</td></tr>' +
+        '<tr><td><code>gh pr merge --squash</code></td><td>Squash and merge.</td></tr></table>'
+    }
+  ],
+  quiz: [
+    { q: 'Какой вариант в окне Commit changes на сайте GitHub правильный?', o: ['Commit directly to the main branch', 'Create a new branch for this commit and start a pull request', 'Любой, разницы нет', 'Закрыть окно'], a: 1, e: 'Прямой коммит в main обходит ревью.' },
+    { q: 'Как внести правку в файл прямо на сайте GitHub?', o: ['Это невозможно без установки Git', 'Открыть файл и нажать карандаш (Edit this file)', 'Скачать файл, исправить и отправить почтой', 'Попросить администратора'], a: 1, e: 'GitHub умеет править текстовые файлы в браузере. Ставить программы не нужно.' },
+    { q: 'Вы проверяете чужой PR. Где увидеть, какие строки изменились?', o: ['Вкладка Files changed', 'Вкладка Actions', 'Настройки организации', 'Вкладка Issues'], a: 0, e: 'На Files changed зелёным показано добавленное, красным удалённое.' },
+    { q: 'Что означает выбор Approve при отправке ревью?', o: ['Автор просит удалить PR', 'Проверяющий прочитал изменения и согласен их влить', 'PR автоматически влит в main', 'Ничего, это просто комментарий'], a: 1, e: 'Approve говорит о согласии. Слияние выполняется отдельной кнопкой.' },
+    { q: 'Какой способ слияния принят у нас?', o: ['Squash and merge', 'Rebase and merge', 'Create a merge commit', 'Любой, как повезёт'], a: 0, e: 'Squash превращает ветку в один коммит, и main остаётся читаемым.' },
+    { q: 'PR влит. Что сделать с веткой?', o: ['Оставить навсегда', 'Нажать Delete branch', 'Переименовать', 'Форсированно запушить в main'], a: 1, e: 'Работа ветки закончена, лишние ветки только мешают.' },
+    { q: 'Как увидеть, кто и когда написал конкретную строку файла?', o: ['Кнопка Blame на странице файла', 'Вкладка Settings', 'Кнопка Fork', 'Никак'], a: 0, e: 'Blame показывает автора и дату рядом с каждой строкой. История всего файла открывается через History.' },
+    { q: 'Нужен ли терминал, чтобы править документ и открыть pull request?', o: ['Да, без него нельзя', 'Нет: всё делается кнопками на github.com', 'Только на Windows', 'Только для приватных репозиториев'], a: 1, e: 'Терминал полезен для кода и массовых правок, а для документов хватает браузера.' }
+  ]
+});
+COURSE.data.c4 = {
+  title: 'Браузер или терминал?',
+  cats: ['Хватит браузера', 'Лучше терминал или Claude Code'],
+  items: [
+    { t: 'Поправить опечатку в одном README', a: 0 },
+    { t: 'Одобрить чужой PR и влить его', a: 0 },
+    { t: 'Изменить 15 файлов в разных папках и прогнать тесты', a: 1 },
+    { t: 'Обновить телефон в файле контактов', a: 0 },
+    { t: 'Переименовать папку и поправить ссылки на неё в десятке документов', a: 1 }
+  ],
+  explain: 'Правки текста, ревью и слияние удобно делать в браузере. Массовые изменения и всё, что требует запуска проверок, лучше делать локально.'
+};
+COURSE.data.o4 = {
+  title: 'Расставьте шаги правки файла в браузере по порядку',
+  items: [
+    'Открыть файл и нажать карандаш (Edit this file)',
+    'Внести правки в тексте',
+    'Commit changes: выбрать «Create a new branch... start a pull request»',
+    'Create pull request и указать ревьюера',
+    'Дождаться Approve и выполнить Squash and merge',
+    'Нажать Delete branch'
+  ],
+  explain: 'Порядок тот же, что и в терминале: ветка, правка, коммит, PR, ревью, слияние, уборка.'
+};
+COURSE.data.w4 = (function () {
+  var esc = COURSE.esc;
+  var base = 'github.com/flysk-tech/client-kb';
+  var file = 'docs/00-about-client/contacts.md';
+  function tabs(on) {
+    var t = ['Code', 'Issues', 'Pull requests', 'Actions'];
+    return '<div class="gh-tabs">' + t.map(function (x) { return '<span' + (x === on ? ' class="on"' : '') + '>' + x + '</span>'; }).join('') + '</div>';
+  }
+  function prTabs(on) {
+    var t = ['Conversation', 'Commits', 'Checks', 'Files changed'];
+    return '<div class="gh-tabs">' + t.map(function (x) { return '<span' + (x === on ? ' class="on"' : '') + '>' + x + '</span>'; }).join('') + '</div>';
+  }
+  var diff = '<div class="gh-box">' + file + '</div>' +
+    '<div class="gh-box del">- Телефон: (не указан)</div>' +
+    '<div class="gh-box add">+ Телефон: +7 900 000-00-00</div>' +
+    '<div class="gh-box add">+ Почта: client@example.com</div>';
+  return {
+    finish: 'Изменение прошло полный путь: правка, ветка, коммит, PR, ревью, squash merge, удаление ветки. Всё в браузере, без установки программ.',
+    steps: [
+      {
+        url: base,
+        task: 'Откройте нужный файл: <code>docs/00-about-client/contacts.md</code>.',
+        hint: 'Нужный файл лежит в папках docs, затем 00-about-client.',
+        view: tabs('Code') + '<div class="gh-h">flysk-tech / client-kb</div><div class="gh-box">Ветка: main &nbsp;|&nbsp; 3 папки, README.md</div><div class="gh-box">README.md: «Изменения только через ветку и pull request. Персональные данные &mdash; только обезличенно.»</div>',
+        choices: [
+          { t: 'docs / 00-about-client / contacts.md', ok: true, msg: 'Верно: вы дошли до файла по папкам.' },
+          { t: 'Code &rarr; Download ZIP', msg: 'ZIP скачает копию всего репозитория, но не откроет файл для правки на GitHub.' },
+          { t: 'Settings', msg: 'Настройки репозитория для правки файла не нужны, в них работает администратор.' },
+          { t: 'Actions', msg: 'Actions показывает автоматические проверки, а не содержимое файлов.' }
+        ]
+      },
+      {
+        url: base + '/blob/main/' + file,
+        task: 'Вы на странице файла. Нажмите значок карандаша, чтобы править.',
+        hint: 'Карандаш подписан Edit this file.',
+        view: tabs('Code') + '<div class="gh-h">' + file + '</div><div class="gh-box">Телефон: (не указан)</div>',
+        choices: [
+          { t: 'Карандаш (Edit this file)', ok: true, msg: 'Открылся редактор.' },
+          { t: 'Raw', msg: 'Raw показывает сырой текст, править в нём нельзя.' },
+          { t: 'Blame', msg: 'Blame показывает, кто написал каждую строку. Для правки не нужен.' },
+          { t: 'Delete file', msg: 'Это удалит файл. Вам нужно изменить текст, а не удалять.' }
+        ]
+      },
+      {
+        url: base + '/edit/main/' + file,
+        task: 'Вы добавили в файл телефон и почту ответственного. Нажмите кнопку, которая открывает окно сохранения.',
+        hint: 'Кнопка зелёная, в правом верхнем углу: Commit changes.',
+        view: '<div class="gh-h">Edit file</div>' + diff,
+        choices: [
+          { t: 'Commit changes&hellip;', ok: true, msg: 'Открылось окно коммита.' },
+          { t: 'Cancel changes', msg: 'Отмена сотрёт ваши правки. Они нужны.' },
+          { t: 'Preview', msg: 'Preview показывает, как выглядит текст, но правку не сохраняет.' }
+        ]
+      },
+      {
+        url: base + '/edit/main/' + file,
+        task: 'В окне Commit changes заполните поле <b>Commit message</b> по формату <code>тип(область): суть</code>.',
+        hint: 'Например: docs(contacts): добавить контакты клиента',
+        view: '<div class="gh-h">Commit changes</div><div class="gh-box">Commit message (подпись изменения) &mdash; поле для краткого описания, что вы сделали.</div>',
+        input: { label: 'Commit message', ph: 'docs(contacts): добавить контакты клиента', btn: 'Далее', key: 'msg', re: /^(feat|fix|chore|docs|release)(\([\w\-]+\))?: .{3,}/, wrong: 'Подпись не по формату. Нужно «тип(область): суть», например docs(contacts): добавить контакты клиента.', ok: 'Подпись принята.' }
+      },
+      {
+        url: base + '/edit/main/' + file,
+        task: 'Ниже в том же окне выберите, куда сохранить правку.',
+        hint: 'Нужна новая ветка и pull request, а не прямой коммит в main.',
+        view: function (c) { return '<div class="gh-h">Commit changes</div><div class="gh-box">Подпись: ' + esc(c.msg) + '</div><div class="gh-side">Два переключателя в окне. От выбора зависит, пройдёт ли правка ревью.</div>'; },
+        choices: [
+          { t: 'Commit directly to the main branch', msg: 'Так правка попадёт в main сразу, без ревью. Эта опция в нашей работе не используется.' },
+          { t: 'Create a new branch for this commit and start a pull request', ok: true, msg: 'Верно: ветка и PR дадут возможность проверить правку до main.' }
+        ]
+      },
+      {
+        url: base + '/edit/main/' + file,
+        task: 'Назовите ветку по правилу <code>тип/кратко-через-дефис</code> латиницей и нажмите Propose changes.',
+        hint: 'Например: docs/add-client-contacts',
+        view: '<div class="gh-h">Commit changes</div><div class="gh-box">(&bull;) Create a new branch for this commit and start a pull request</div>',
+        input: { label: 'Branch name', ph: 'docs/add-client-contacts', btn: 'Propose changes', key: 'branch', re: /^(feat|fix|chore|docs|release)\/[a-z0-9][a-z0-9\-]*$/, wrong: 'Имя ветки: тип (feat, fix, chore, docs или release), косая черта, затем краткое описание латиницей через дефис.', ok: 'GitHub создал ветку и коммит и предлагает открыть pull request.' }
+      },
+      {
+        url: function (c) { return base + '/compare/main...' + c.branch; },
+        task: 'Откроется страница Open a pull request. Справа укажите проверяющего в блоке <b>Reviewers</b>.',
+        hint: 'Проверяющего выбирают в блоке Reviewers, не в Assignees.',
+        view: function (c) { return '<div class="gh-h">Open a pull request</div><div class="gh-box">base: main &larr; compare: ' + esc(c.branch) + '</div><div class="gh-box">Название: ' + esc(c.msg) + '</div><div class="gh-side">Справа: Reviewers, Assignees, Labels</div>'; },
+        choices: [
+          { t: 'Reviewers &rarr; выбрать коллегу', ok: true, msg: 'Ревьюер назначен: ему придёт уведомление.' },
+          { t: 'Assignees', msg: 'Assignees &mdash; это исполнитель. Проверяющих назначают в Reviewers.' },
+          { t: 'Labels', msg: 'Метки помогают сортировать, но ревью не запрашивают.' }
+        ]
+      },
+      {
+        url: function (c) { return base + '/compare/main...' + c.branch; },
+        task: 'Опишите PR для человека, который видит его впервые: что изменено и зачем. Затем создайте PR.',
+        hint: 'Одно-два предложения: что добавили и откуда данные.',
+        view: '<div class="gh-h">Open a pull request</div><div class="gh-box">Reviewers: назначен</div>',
+        input: { label: 'Description', ph: 'Добавил телефон и почту ответственного от клиента, данные из письма.', btn: 'Create pull request', key: 'desc', re: /.{10,}/, wrong: 'Опишите в одном-двух предложениях: что изменено, зачем, как проверить (не короче 10 символов).', ok: 'Pull request открыт. Теперь его видит ревьюер.' }
+      },
+      {
+        url: base + '/pull/1',
+        task: 'Теперь вы ревьюер. Посмотрите, какие именно строки изменились.',
+        hint: 'Вкладка Files changed.',
+        view: prTabs('Conversation') + '<div class="gh-h">PR #1: добавить контакты клиента</div><div class="gh-box">Merging is blocked: нужно одобрение (1 review).</div>',
+        choices: [
+          { t: 'Files changed', ok: true, msg: 'Вы видите diff.' },
+          { t: 'Merge pull request', msg: 'Сливать, не посмотрев изменения, нельзя. Сначала читаем.' },
+          { t: 'Close pull request', msg: 'Закрытие отклонит PR. Сначала прочитайте изменения.' }
+        ]
+      },
+      {
+        url: base + '/pull/1/files',
+        task: 'Изменения верные, замечаний нет. Завершите ревью.',
+        hint: 'Review changes &rarr; Approve &rarr; Submit review.',
+        view: prTabs('Files changed') + diff,
+        choices: [
+          { t: 'Review changes &rarr; Approve &rarr; Submit review', ok: true, msg: 'Ревью одобрено.' },
+          { t: 'Review changes &rarr; Request changes', msg: 'Request changes нужен, когда есть замечания. Здесь всё верно.' },
+          { t: 'Review changes &rarr; Comment', msg: 'Comment &mdash; просто заметка, она не считается одобрением.' }
+        ]
+      },
+      {
+        url: base + '/pull/1',
+        task: 'Одобрение есть, проверки зелёные. Выберите принятый у нас способ слияния.',
+        hint: 'Стрелка рядом с зелёной кнопкой, затем Squash and merge.',
+        view: prTabs('Conversation') + '<div class="gh-h">PR #1: добавить контакты клиента</div><div class="gh-box add">1 approving review &nbsp;|&nbsp; All checks have passed</div>',
+        choices: [
+          { t: 'Squash and merge', ok: true, msg: 'Все коммиты ветки станут одним коммитом в main.' },
+          { t: 'Create a merge commit', msg: 'Так в main попадут все промежуточные коммиты. У нас один PR превращается в один коммит.' },
+          { t: 'Rebase and merge', msg: 'Rebase переписывает коммиты. Мы используем squash.' }
+        ]
+      },
+      {
+        url: base + '/pull/1',
+        task: 'Pull request влит. Уберите за собой.',
+        hint: 'Кнопка Delete branch рядом с надписью о слиянии.',
+        view: prTabs('Conversation') + '<div class="gh-box add">Pull request successfully merged and closed. You can delete this branch.</div>',
+        choices: [
+          { t: 'Delete branch', ok: true, msg: 'Ветка удалена. История изменений в main осталась.' },
+          { t: 'Revert', msg: 'Revert отменяет влитый PR. Он нужен, только если влили ошибочно.' },
+          { t: 'Ничего не нажимать, ветка пусть остаётся', msg: 'Старые ветки захламляют список. После слияния ветку удаляем.' }
+        ]
+      }
+    ]
+  };
+})();
+COURSE.data.t4 = {
+  title: 'Тренажёр · client-kb',
+  ps: 'client-kb (main) $',
+  prompt: 'Вы в папке client-kb. Репозиторий уже скачан (clone). Доступны команды git и gh.',
+  finish: 'Изменение прошло полный путь: ветка, коммит, push, PR, squash merge, обновление локального main. Так выглядит любая работа в наших репозиториях.',
+  steps: [
+    {
+      task: 'Подтяни свежий main (команда <code>git pull</code>).',
+      hint: 'git pull',
+      re: /^git pull( origin main)?$/,
+      out: 'Already up to date.'
+    },
+    {
+      task: 'Создай ветку и перейди в неё. Имя по правилу <code>тип/кратко</code>, например <code>docs/add-client-contacts</code>.',
+      hint: 'git switch -c docs/add-client-contacts   (или git checkout -b ...)',
+      re: /^git (switch -c|checkout -b) ((?:feat|fix|chore|docs|release)\/[a-z0-9][a-z0-9\-]*)$/,
+      wrong: 'Имя ветки должно быть в формате тип/кратко-через-дефис, где тип: feat, fix, chore, docs или release.',
+      out: function (m, c) { c.branch = m[2]; return "Switched to a new branch '" + m[2] + "'"; }
+    },
+    {
+      task: 'Ты открыл <code>docs/00-about-client/contacts.md</code> в редакторе и добавил телефон и почту. Спроси Git, что изменилось.',
+      hint: 'git status',
+      re: /^git status$/,
+      out: function (m, c) {
+        return 'On branch ' + c.branch + '\nChanges not staged for commit:\n  (use "git add <file>..." to update what will be committed)\n\n\tmodified:   docs/00-about-client/contacts.md\n\nno changes added to commit (use "git add" and/or "git commit -a")';
+      }
+    },
+    {
+      task: 'Отметь изменённый файл для коммита (<code>git add</code> и путь к файлу, либо точка).',
+      hint: 'git add docs/00-about-client/contacts.md',
+      re: /^git add (\.|-A|docs\/00-about-client\/contacts\.md)$/,
+      out: '(команда ничего не печатает: это нормально, файл теперь в «staged»)'
+    },
+    {
+      task: 'Сделай коммит. Подпись по формату <code>тип(область): суть</code>, например <code>docs(contacts): добавить контакты клиента</code>.',
+      hint: 'git commit -m "docs(contacts): добавить контакты клиента"',
+      re: /^git commit -m (["'])(.+)\1$/,
+      check: function (v, m) {
+        if (!/^(feat|fix|chore|docs|release)(\([\w\-]+\))?: .{3,}/.test(m[2])) {
+          return 'Подпись не по формату. Нужно «тип(область): суть», например docs(contacts): добавить контакты клиента.';
+        }
+      },
+      out: function (m, c) { return '[' + c.branch + ' 4f2a9c1] ' + m[2] + '\n 1 file changed, 6 insertions(+)'; }
+    },
+    {
+      task: 'Отправь ветку на GitHub: <code>git push -u origin имя-ветки</code>.',
+      hint: 'git push -u origin ' + 'ИМЯ_ТВОЕЙ_ВЕТКИ',
+      re: /^git push\b(.*)$/,
+      check: function (v, m, c) {
+        if (!/^git push( -u| --set-upstream)? origin \S+$/.test(v)) {
+          return 'fatal: The current branch ' + c.branch + ' has no upstream branch.\nTo push the current branch and set the remote as upstream, use:\n\n    git push --set-upstream origin ' + c.branch + '\n\n(Это настоящее поведение Git: для новой ветки надо указать origin и имя.)';
+        }
+        if (v.split(' ').pop() !== c.branch) return 'Укажи имя своей ветки: ' + c.branch;
+      },
+      out: function (m, c) {
+        return 'Enumerating objects: 9, done.\nWriting objects: 100% (5/5), done.\nremote: Create a pull request for \'' + c.branch + '\' on GitHub by visiting:\nremote:   https://github.com/flysk-tech/client-kb/pull/new/' + c.branch + '\nTo github.com:flysk-tech/client-kb.git\n * [new branch]      ' + c.branch + ' -> ' + c.branch + "\nbranch '" + c.branch + "' set up to track 'origin/" + c.branch + "'.";
+      }
+    },
+    {
+      task: 'Открой pull request в main. Подойдёт <code>gh pr create --fill</code> или <code>gh pr create --title "..." --body "..."</code>.',
+      hint: 'gh pr create --fill',
+      re: /^gh pr create\b(.*)$/,
+      out: function (m, c) { return 'Creating pull request for ' + c.branch + ' into main in flysk-tech/client-kb\n\nhttps://github.com/flysk-tech/client-kb/pull/1'; }
+    },
+    {
+      task: 'Коллега прочитал изменения и нажал Approve. Влей PR способом squash и удали ветку: <code>gh pr merge --squash --delete-branch</code>.',
+      hint: 'gh pr merge --squash --delete-branch',
+      re: /^gh pr merge\b(.*)$/,
+      check: function (v) {
+        if (!/(--squash|\s-s)(\s|$)/.test(v)) return 'У нас принят squash: добавь флаг --squash.';
+      },
+      out: function (m, c) { return '✓ Squashed and merged pull request #1\n' + (/(--delete-branch|\s-d)(\s|$)/.test(m[0]) ? '✓ Deleted branch ' + c.branch + ' and switched to branch main' : 'Ветка осталась на GitHub: удалить можно кнопкой Delete branch.'); }
+    },
+    {
+      task: 'Вернись в main, если ещё не там: <code>git switch main</code>.',
+      hint: 'git switch main',
+      re: /^git (switch|checkout) main$/,
+      out: "Already on 'main'\nYour branch is up to date with 'origin/main'."
+    },
+    {
+      task: 'Заверши цикл: подтяни main, в котором уже лежит твоё изменение.',
+      hint: 'git pull',
+      re: /^git pull( origin main)?$/,
+      out: 'Updating 93c2bd9..a1b2c3d\nFast-forward\n docs/00-about-client/contacts.md | 6 ++++++\n 1 file changed, 6 insertions(+)'
+    }
+  ]
+};
+
+</script>
+<script>
+COURSE.modules.push({
+  id: 4, min: 15,
+  title: 'Безопасность и аккуратность',
+  sub: 'Что нельзя класть в репозиторий и что делать, если уже положили',
+  intro: '<p>История в Git хранится вечно. Всё, что попало в коммит, остаётся в истории, даже если файл потом удалён. Поэтому здесь правила строже, чем в обычной работе с файлами.</p>',
+  lessons: [
+    {
+      title: 'Что не коммитим никогда',
+      html: '<table><tr><th>Нельзя</th><th>Пример</th><th>Где хранить вместо этого</th></tr>' +
+        '<tr><td>Секреты</td><td>пароли, API-ключи, токены (в том числе <code>ghp_...</code>), ключи доступа к серверам</td><td>менеджер паролей, переменные окружения, секреты Actions</td></tr>' +
+        '<tr><td>Персональные данные</td><td>списки клиентов с телефонами, договоры, выгрузки CRM</td><td>защищённое хранилище; в репозиторий &mdash; только обезличенное</td></tr>' +
+        '<tr><td>Конфиги окружения</td><td>файлы <code>.env</code>, <code>~/.myapp/config.json</code> с паролем от CRM</td><td>только локально, файл в <code>.gitignore</code></td></tr>' +
+        '<tr><td>Тяжёлые и мусорные файлы</td><td>видеозаписи, архивы, <code>node_modules</code>, <code>vendor</code></td><td>облачное хранилище; зависимости ставятся командой</td></tr></table>' +
+        '<h3>.gitignore &mdash; список «не замечать»</h3><p>Файл <code>.gitignore</code> в корне репозитория говорит Git: эти файлы не отслеживай.</p>' +
+        '<pre><code>.env\n.env.*\nnode_modules/\nvendor/\n*.log\n.DS_Store</code></pre>' +
+        '<div class="note"><b>Пример</b>Конфиг <code>~/.myapp/config.json</code> содержит пароль от CRM и админ-токен. Он лежит в домашней папке, а не в репозитории, и это правильно.</div>' +
+        '<div data-w="classify" data-id="c5"></div>'
+    },
+    {
+      title: 'Секрет попал в коммит: что делать',
+      html: '<div class="warn"><b>Главное правило</b>Если секрет хоть на минуту оказался в GitHub, считайте его <b>скомпрометированным</b>. Удалить файл новым коммитом недостаточно: старый коммит остаётся в истории.</div>' +
+        '<ol><li><b>Не паникуйте и не пытайтесь «тихо» стереть историю.</b> Сначала сообщите ответственному за доступы.</li>' +
+        '<li><b>Отзовите и выпустите заново</b> сам секрет: перегенерируйте токен или смените пароль. Это единственное, что действительно решает проблему.</li>' +
+        '<li>Только потом, при необходимости, чистите историю (это отдельная техническая операция для администратора).</li>' +
+        '<li>Добавьте файл в <code>.gitignore</code>, чтобы не повторилось.</li></ol>' +
+        '<h3>Особый случай: публичный репозиторий</h3><p>Публичные репозитории видит любой человек, их индексируют поисковики и боты, которые ищут утёкшие ключи. Для публичного репозитория скорость реакции измеряется минутами.</p>' +
+        '<h3>Автоматические сторожа</h3><p>Существуют инструменты, которые ищут секреты в коммитах автоматически (например, gitleaks) и проверки в Actions. Они срабатывают <b>после</b> пуша, поэтому не заменяют внимательность.</p>' +
+        '<div data-w="order" data-id="o5"></div>'
+    },
+    {
+      title: 'Права и опасные команды',
+      html: '<h3>Доступ</h3><ul><li>У каждого должен быть свой личный аккаунт GitHub с двухфакторной защитой (2FA). Общие логины не используем.</li><li>Доступ к организации <code>flysk-tech</code> и к репозиториям выдаёт Антон. Нужен доступ &mdash; просите у него, а не ищите обходной путь.</li><li>Токены (PAT) делайте с минимальными правами.</li></ul>' +
+        '<h3>Команды, которые нужно знать как «красные кнопки»</h3>' +
+        '<table><tr><th>Команда</th><th>Чем опасна</th></tr>' +
+        '<tr><td><code>git push --force</code></td><td>Перезаписывает историю на GitHub, чужие коммиты могут пропасть. Для общих веток, особенно main, не используем.</td></tr>' +
+        '<tr><td><code>git reset --hard</code></td><td>Стирает ваши несохранённые изменения без возможности вернуть.</td></tr>' +
+        '<tr><td><code>git clean -fd</code></td><td>Удаляет неотслеживаемые файлы.</td></tr>' +
+        '<tr><td>Удаление репозитория</td><td>Необратимо. Делает только владелец организации.</td></tr></table>' +
+        '<div class="tip"><b>Безопасная привычка</b>Перед любой «красной» командой выполните <code>git status</code> и убедитесь, что ничего ценного не потеряете. Если сомневаетесь &mdash; сначала сделайте коммит или <code>git stash</code>.</div>' +
+        '<div class="note"><b>Откат без драмы</b>Вмержили не то? Не стирайте историю: используйте <code>git revert</code> или кнопку <b>Revert</b> на странице влитого PR. Она создаёт новый PR, который отменяет изменения, и история остаётся честной.</div>'
+    }
+  ],
+  quiz: [
+    { q: 'Файл <code>.env</code> с паролями лежит в рабочей папке. Что правильно?', o: ['Закоммитить его, чтобы не потерять', 'Добавить в .gitignore и хранить только локально', 'Отправить коллегам в публичный чат', 'Положить в README'], a: 1, e: 'Секреты и локальные конфиги в репозиторий не попадают.' },
+    { q: 'Вы случайно закоммитили токен и тут же удалили файл новым коммитом. Проблема решена?', o: ['Да, файла уже нет', 'Нет: токен остался в истории, его нужно отозвать и выпустить новый', 'Да, если репозиторий приватный', 'Нет, но ничего делать не надо'], a: 1, e: 'История хранит всё. Единственное надёжное решение &mdash; отозвать секрет.' },
+    { q: 'Почему утечка в публичный репозиторий особенно срочная?', o: ['Потому что GitHub начисляет штраф', 'Потому что боты находят ключи за минуты', 'Потому что публичные репозитории медленнее', 'Это не срочнее'], a: 1, e: 'Публичное видно всем, а боты сканируют новые коммиты постоянно.' },
+    { q: 'Чем опасна команда <code>git push --force</code> в main?', o: ['Ничем', 'Может перезаписать историю и стереть чужие коммиты', 'Она удаляет компьютер', 'Она только замедляет работу'], a: 1, e: 'Force-push переписывает общую историю. В общих ветках не используем.' },
+    { q: 'Вмержили PR с ошибкой. Как откатить аккуратно?', o: ['Удалить репозиторий и создать заново', 'Сделать revert: новый PR отменяет изменения, история сохраняется', 'Молча переписать историю force-push-ом', 'Ничего не делать'], a: 1, e: 'Revert оставляет честную историю: видно и ошибку, и её исправление.' },
+    { q: 'Можно ли хранить в репозитории выгрузку клиентской базы с телефонами?', o: ['Да, репозиторий же приватный', 'Нет: персональные данные только в обезличенном виде и в защищённом хранилище', 'Да, если назвать файл по-другому', 'Да, но только по пятницам'], a: 1, e: 'Правило из README базы знаний клиента: персональные данные &mdash; только обезличенно.' }
+  ]
+});
+COURSE.data.c5 = {
+  title: 'Можно ли это коммитить?',
+  cats: ['Можно', 'Нельзя'],
+  items: [
+    { t: 'Регламент в формате Markdown', a: 0 },
+    { t: 'Файл <code>.env</code> с ключом API', a: 1 },
+    { t: 'Исходный код виджета', a: 0 },
+    { t: 'Таблица клиентов с телефонами и ФИО', a: 1 },
+    { t: 'Папка <code>node_modules</code>', a: 1 },
+    { t: '<code>.gitignore</code>', a: 0 }
+  ],
+  explain: 'Можно текст, код и настройки без секретов. Нельзя секреты, персональные данные и генерируемые тяжёлые папки (они ставятся командой).'
+};
+COURSE.data.o5 = {
+  title: 'Токен попал в коммит. Расставь шаги реакции по порядку',
+  items: [
+    'Сообщить ответственному за доступы',
+    'Отозвать токен и выпустить новый',
+    'Обновить новый токен там, где он используется',
+    'Добавить файл в .gitignore, чтобы не повторилось'
+  ],
+  explain: 'Сначала нейтрализуем сам секрет, потом чиним привычку.'
+};
+
+</script>
+<script>
+COURSE.modules.push({
+  id: 5, min: 35,
+  title: 'Claude и GitHub вместе',
+  sub: 'Как ИИ-ассистент помогает с GitHub в браузере и в Claude Code, и готовый скилл',
+  intro: '<p>Claude помогает на каждом шаге: объясняет чужие изменения, пишет описание PR, ищет ошибки и секреты до отправки, подсказывает, какую кнопку нажать. Для этого не нужен терминал: можно работать из чата рядом с браузером. Тем, кто работает с кодом, Claude Code умеет делать то же самое прямо в репозитории. В конце блока вы получите готовый <b>скилл</b> с правилами GitHub для Claude.</p>',
+  lessons: [
+    {
+      title: 'Claude рядом с браузером: готовые запросы',
+      html: '<p>Откройте GitHub в одной вкладке, Claude (чат или приложение) в другой. Копируйте текст со страницы в чат и просите помощи. Ответственность за результат остаётся за вами, поэтому итог проверяйте.</p>' +
+        '<h3>Что можно поручить</h3>' +
+        '<table><tr><th>Ситуация на GitHub</th><th>Что отправить Claude</th></tr>' +
+        '<tr><td>Нужно понять чужой PR</td><td><pre><code>Вот описание и изменения pull request (текст со вкладки Files changed). Объясни простыми словами: что изменилось, зачем и на что обратить внимание при ревью.</code></pre></td></tr>' +
+        '<tr><td>Сами правите документ</td><td><pre><code>Вот мой текст до и после правки. Напиши описание pull request: что изменено, зачем, как проверить. Подпись коммита предложи в формате тип(область): суть.</code></pre></td></tr>' +
+        '<tr><td>Перед отправкой на ревью</td><td><pre><code>Проверь текст изменений: нет ли паролей, токенов, ключей, телефонов и ФИО клиентов. Перечисли найденное.</code></pre></td></tr>' +
+        '<tr><td>Пришли замечания ревью</td><td><pre><code>Вот комментарии ревьюера к моему PR. Разбери, что нужно поправить в первую очередь, и предложи формулировки ответов.</code></pre></td></tr>' +
+        '<tr><td>Конфликт слияния</td><td><pre><code>Вот файл с метками конфликта. Объясни, чем отличаются два варианта, и предложи итоговый текст. Я проверю результат.</code></pre></td></tr>' +
+        '<tr><td>Не знаю, какую кнопку нажать</td><td><pre><code>Я на странице pull request, кнопка слияния серая. Что это может значить и что проверить? Вот текст со страницы: ...</code></pre></td></tr>' +
+        '<tr><td>Хочу подсказку по интерфейсу</td><td><pre><code>Пошагово расскажи, как на github.com переименовать файл и сохранить изменение через новую ветку и pull request.</code></pre></td></tr></table>' +
+        '<div class="warn"><b>Что нельзя вставлять в чат</b>Пароли, токены, ключи доступа, персональные данные клиентов и сотрудников. Если сомневаетесь, обезличьте текст или спросите ответственного за информационную безопасность.</div>' +
+        '<div class="tip"><b>Если нужно больше, чем чат</b>Claude Code умеет сам открыть репозиторий, внести правки и подготовить PR. Он работает в терминале, в приложении и в браузерной версии, где подключается к репозиторию на GitHub. Следующие уроки об этом.</div>'
+    },
+    {
+      title: 'Что Claude Code умеет с Git',
+      html: '<p>Claude Code работает в вашем терминале или в приложении, внутри папки проекта. Для Git это значит:</p>' +
+        '<ul><li>понимает состояние репозитория: ветку, изменённые файлы, историю;</li><li>может создать ветку, сделать коммит с осмысленной подписью, отправить ветку;</li><li>через <code>gh</code> открывает pull request, читает комментарии ревью, смотрит результаты проверок;</li><li>объясняет чужой код и историю: «почему эта строка так написана», «что поменялось в PR».</li></ul>' +
+        '<div class="note"><b>Вы остаётесь ответственным</b>Claude действует от вашего аккаунта. Любой коммит и PR &mdash; ваши. Читайте diff до того, как разрешать пуш.</div>' +
+        '<h3>Разрешения</h3><p>Перед выполнением команд Claude Code спрашивает разрешение. В настройках проекта можно заранее разрешить безопасные: например, чтение (<code>gh pr view</code>, <code>gh issue list</code>), а на запись (<code>push</code>, <code>pr merge</code>) оставить подтверждение вручную. Разрешайте широко только то, что не необратимо.</p>' +
+        '<h3>Примеры запросов</h3>' +
+        '<pre><code>Посмотри git status и объясни, что изменено\nСоздай ветку docs/add-client-contacts и сделай коммит по нашему формату\nОткрой PR в main с описанием: что изменено и как проверить\nПрочитай комментарии ревью в PR и предложи правки\nПочему упала проверка в Actions? Посмотри логи и объясни</code></pre>' +
+        '<div class="warn"><b>Три вещи, которые Claude не должен делать без явной просьбы</b>Пушить в main, использовать <code>--force</code>, сливать PR. И никогда не добавлять в коммит <code>.env</code> и токены.</div>'
+    },
+    {
+      title: 'Скилл github-helper: правила GitHub для Claude',
+      html: '<p><b>Скилл</b> &mdash; это папка с файлом <code>SKILL.md</code>: инструкция, которую Claude Code подключает сам, когда вы просите что-то про Git, GitHub, pull request или ревью. В файле записаны наши правила: ветки, подписи коммитов, шаблон описания PR, проверка на секреты и то, что Claude не делает без вашего подтверждения. Так Claude работает одинаково у всех, а не «как получится».</p>' +
+        '<h3>Что в скилле</h3><ul><li>неизменные правила: никакого прямого пуша в main, никакого <code>--force</code>, слияние только после Approve;</li><li>пять сценариев: новая правка, описание PR, ревью чужого PR, ответ на комментарии, откат;</li><li>режим «браузер»: если вы работаете на github.com, Claude объясняет, какие кнопки нажать, а не выдаёт команды.</li></ul>' +
+        '<div data-w="skillfile" data-id="skill1"></div>' +
+        '<h3>Как установить</h3>' +
+        '<ol><li>Скачайте файл кнопкой выше (или скопируйте текст в новый файл с именем <code>SKILL.md</code>).</li>' +
+        '<li>Положите его в папку <code>.claude/skills/github-helper/SKILL.md</code> внутри проекта. Тогда скилл работает для всех, кто открывает этот проект.</li>' +
+        '<li>Чтобы скилл работал во всех ваших проектах, положите его в папку <code>.claude/skills/github-helper/</code> в вашей домашней директории.</li>' +
+        '<li>Чтобы им пользовалась вся команда, предложите добавить папку в общий репозиторий настроек Claude вашей команды через pull request, как любое другое изменение.</li>' +
+        '<li>Откройте Claude Code и спросите: «Какие у тебя есть скиллы?». Скилл <code>github-helper</code> должен быть в списке.</li></ol>' +
+        '<h3>Как пользоваться</h3>' +
+        '<pre><code>Подготовь правку в README и открой PR по нашим правилам\nОбъясни PR #12 и проведи ревью: что проверить в первую очередь\nУ меня конфликт в PR, помоги разобраться\nЯ работаю в браузере: как отменить влитый PR?</code></pre>' +
+        '<div class="note"><b>Без терминала</b>Если Claude Code вам недоступен, вставьте текст скилла в начало чата с Claude и напишите «Работай по этим правилам». Эффект будет похожим, хотя не такой удобный.</div>' +
+        '<div class="warn"><b>Скилл не заменяет ревью</b>Он напоминает Claude о правилах, но не делает его непогрешимым. Diff и описание PR читаете вы.</div>'
+    },
+    {
+      title: 'CLAUDE.md и общие навыки',
+      html: '<p><b>CLAUDE.md</b> &mdash; файл в корне репозитория, который Claude Code читает в начале каждой сессии. Это инструкция для ИИ: как собрать проект, какие правила, что нельзя. Он лежит в Git, значит, правится через PR, как всё остальное.</p>' +
+        '<h3>Пример CLAUDE.md</h3>' +
+        '<pre><code># Example App — веб-приложение\n\nPHP 8.4, Laravel 12.\n\n## Commands\n- ./vendor/bin/sail artisan test — запуск тестов\n- ./vendor/bin/sail composer pint — линтинг\n\n## Production\n- Tinker НЕ доступен на проде\n\n## Rules\n- Отвечай на русском, код на английском\n- declare(strict_types=1); во всех файлах</code></pre>' +
+        '<p>Видно структуру: что за проект, как запускать, что запрещено, какие правила кода. Хороший CLAUDE.md короткий и конкретный.</p>' +
+        '<h3>Общие навыки и агенты: общий репозиторий настроек</h3><p>Хорошая практика &mdash; завести в организации общий репозиторий настроек (например, <code>team-config</code>) с папками <code>skills/</code> (навыки, например по деплою и справочникам проекта) и <code>agents/</code>. Так команда делится одинаковым «умением» через Git: поправили один раз, обновили у всех.</p>' +
+        '<h3>Пример команд для типовых задач</h3>' +
+        '<table><tr><th>Задача</th><th>Команда в Claude Code</th></tr>' +
+        '<tr><td>Баг или мелкая правка</td><td><code>/write-code</code></td></tr>' +
+        '<tr><td>Фича среднего размера</td><td><code>/new-tech-spec</code> &rarr; <code>/decompose-tech-spec</code> &rarr; <code>/do-task</code></td></tr>' +
+        '<tr><td>Большая фича</td><td><code>/new-user-spec</code> &rarr; <code>/new-tech-spec</code> &rarr; <code>/decompose-tech-spec</code> &rarr; <code>/do-task</code></td></tr>' +
+        '</table>' +
+        '<p class="prog" style="color:#5d6b85">Набор команд зависит от проекта: они лежат в навыках проекта.</p>'
+    },
+    {
+      title: 'Рабочий цикл вместе с Claude',
+      html: '<ol>' +
+        '<li><b>Актуализируйте main.</b> Попросите: «обнови main и создай ветку feat/... от него».</li>' +
+        '<li><b>Сформулируйте задачу.</b> Что должно получиться и как проверить. Чем конкретнее, тем меньше правок.</li>' +
+        '<li><b>Смотрите план и diff.</b> Особенно файлы, которые вы не просили трогать.</li>' +
+        '<li><b>Коммитьте небольшими частями</b> с подписью по формату.</li>' +
+        '<li><b>Откройте PR и опишите его.</b> Claude хорошо пишет описание: что изменено, зачем, как проверить.</li>' +
+        '<li><b>Живое ревью.</b> Ваш коллега читает PR как обычно. Фраза «это сделал ИИ» не отменяет ревью, а усиливает его необходимость.</li>' +
+        '<li><b>Слияние и очистка.</b> После merge удаляем ветку и обновляем main.</li></ol>' +
+        '<h3>Типичные ловушки</h3><ul>' +
+        '<li><b>Слишком большой PR.</b> ИИ легко нагенерирует тысячу строк. Просите разбивать на части: один PR &mdash; одна идея.</li>' +
+        '<li><b>Доверие без проверки.</b> «Тесты прошли» должно быть подтверждено запуском, а не словами.</li>' +
+        '<li><b>Забытый секрет.</b> Перед пушем спросите: «проверь, что в diff нет ключей и .env».</li>' +
+        '<li><b>Работа поверх устаревшего main.</b> Начинайте сессию с обновления.</li></ul>' +
+        '<div data-w="classify" data-id="c6"></div>'
+    }
+  ],
+  quiz: [
+    { q: 'Что такое CLAUDE.md?', o: ['Лицензия проекта', 'Файл с инструкциями для Claude Code: команды, правила, ограничения проекта', 'Список сотрудников', 'Резервная копия'], a: 1, e: 'Claude Code читает его в начале сессии. Файл хранится в Git и правится через PR.' },
+    { q: 'От чьего имени создаются коммиты и PR, которые делает Claude Code?', o: ['От имени самого Claude', 'От вашего аккаунта, поэтому вы за них отвечаете', 'От имени владельца организации', 'Анонимно'], a: 1, e: 'Claude работает с вашими правами. Читайте diff до пуша.' },
+    { q: 'Что нужно сделать до того, как разрешать Claude пушить?', o: ['Ничего, он не ошибается', 'Прочитать diff и убедиться, что нет лишних файлов и секретов', 'Выключить компьютер', 'Удалить .gitignore'], a: 1, e: 'ИИ может зацепить лишнее. Проверка перед пушем &mdash; ваша ответственность.' },
+    { q: 'Зачем в организации общий репозиторий настроек Claude (например, <code>team-config</code>)?', o: ['Для фотографий', 'Чтобы команда делилась общими навыками и агентами для Claude Code через Git', 'Это резервная копия платформы', 'Для хранения паролей'], a: 1, e: 'В нём лежат skills/ и agents/: общее «умение», обновляемое через PR.' },
+    { q: 'Claude подготовил PR на 40 файлов. Как лучше поступить?', o: ['Слить сразу: он же ИИ', 'Попросить разбить на несколько небольших PR и ревьюить каждый', 'Удалить все изменения', 'Закрыть вкладку'], a: 1, e: 'Маленькие PR легче проверять. Размер не делает их надёжнее.' },
+    { q: 'Какие действия не следует разрешать Claude без явной просьбы?', o: ['git status', 'Пуш в main, force-push, слияние PR', 'Чтение файлов', 'gh pr view'], a: 1, e: 'Чтение безопасно. Запись в общие ветки и необратимые операции &mdash; только по вашему решению.' },
+    { q: 'Что такое скилл (SKILL.md) для Claude Code?', o: ['Диплом об окончании курса', 'Файл с инструкциями, который Claude подключает, когда задача подходит под его описание', 'Расширение для браузера', 'Резервная копия репозитория'], a: 1, e: 'Скилл фиксирует наши правила, чтобы Claude работал с GitHub одинаково у всех.' },
+    { q: 'Вы не используете терминал, а хотите разобраться в чужом PR с помощью Claude. Что делать?', o: ['Это невозможно', 'Скопировать описание и изменения со страницы PR в чат и попросить объяснить', 'Вставить в чат токен GitHub', 'Дать Claude общий пароль'], a: 1, e: 'Копируйте со страницы только то, что можно показывать. Секреты и персональные данные в чат не вставляем.' },
+    { q: 'Что нельзя вставлять в чат с Claude при работе с PR?', o: ['Описание pull request', 'Пароли, токены, ключи и персональные данные клиентов', 'Текст README', 'Название ветки'], a: 1, e: 'Секреты и персональные данные остаются вне чата. При сомнении обезличьте текст.' }
+  ]
+});
+COURSE.data.skill1 = {
+  title: 'Файл SKILL.md',
+  file: 'SKILL.md',
+  text: [
+    '---',
+    'name: github-helper',
+    'description: Помогает безопасно работать с GitHub во Флайск. Создать ветку и pull request, оформить описание, проверить изменения на секреты, провести ревью, ответить на комментарии, откатить влитое. Используй, когда пользователь просит что-то сделать с git, GitHub, PR или ревью, а также когда он работает на github.com в браузере.',
+    '---',
+    '',
+    '# GitHub-помощник',
+    '',
+    'Отвечай по-русски. Команды и имена веток пиши латиницей.',
+    '',
+    '## Правила, которые не нарушаются',
+    '',
+    '1. В main только через pull request и после Approve. Никогда не коммить и не пушь в main напрямую.',
+    '2. Никаких `git push --force`, `git reset --hard`, `git clean -fd` без явной просьбы пользователя и без предупреждения о последствиях.',
+    '3. Не добавляй в коммит секреты и персональные данные: `.env`, токены (`ghp_...`), ключи, пароли, телефоны и ФИО клиентов. Перед коммитом проверь diff и сообщи о находках.',
+    '4. Перед `git push`, `gh pr create` и `gh pr merge` покажи, что именно будет сделано, и дождись подтверждения.',
+    '5. Сливай только squash-ом (`gh pr merge --squash --delete-branch`) и только после Approve и зелёных проверок.',
+    '6. Одна ветка: одна задача. Большие изменения предлагай разбить на несколько PR.',
+    '7. Если у пользователя нет доступа к репозиторию (404, Permission denied), не ищи обходных путей. Скажи, что доступ нужно запросить у Антона.',
+    '',
+    '## Формат',
+    '',
+    '- Ветка: `тип/кратко-через-дефис`, где тип: feat, fix, chore, docs или release. Пример: `docs/add-client-contacts`.',
+    '- Коммит и заголовок PR: `тип(область): суть`. Пример: `docs(contacts): добавить контакты клиента`.',
+    '',
+    '## Сценарии',
+    '',
+    '### 1. Новая правка',
+    '',
+    '1. `git status`: убедись, что нет чужих несохранённых изменений.',
+    '2. `git switch main && git pull`, затем `git switch -c тип/кратко`.',
+    '3. Внеси правки. Затем покажи `git diff` и перечисли, что изменилось.',
+    '4. Проверь diff на секреты и персональные данные (правило 3).',
+    '5. Сделай коммит по формату. Спроси подтверждение и выполни `git push -u origin ветка`.',
+    '6. Открой PR (`gh pr create`) с описанием по шаблону ниже и укажи ревьюера.',
+    '',
+    '### 2. Шаблон описания PR',
+    '',
+    '```',
+    '## Что изменено',
+    '## Зачем',
+    '## Как проверить',
+    '## Что не сделано / риски',
+    '```',
+    '',
+    '### 3. Ревью чужого PR',
+    '',
+    '1. `gh pr view номер` и `gh pr diff номер`.',
+    '2. Объясни простыми словами, что изменилось и зачем.',
+    '3. Отдельно перечисли риски: секреты, персональные данные, файлы вне темы PR, слишком большой размер.',
+    '4. Предложи комментарии к конкретным строкам. Решение (Approve или Request changes) принимает пользователь.',
+    '',
+    '### 4. Ответ на комментарии ревью',
+    '',
+    '1. Прочитай комментарии (`gh pr view номер --comments`).',
+    '2. Сгруппируй по важности и предложи правки.',
+    '3. Вноси правки в ту же ветку: PR обновится сам. Отвечай на каждый комментарий: «поправил» или причина, почему оставлено.',
+    '',
+    '### 5. Откат влитого',
+    '',
+    'Используй кнопку Revert на странице влитого PR или `git revert`. Историю не переписывай.',
+    '',
+    '## Если пользователь работает в браузере',
+    '',
+    'Не выдавай команды. Объясняй пошагово, какие кнопки нажать на github.com:',
+    '',
+    '- Правка файла: карандаш (Edit this file), затем Commit changes и вариант Create a new branch for this commit and start a pull request. Вариант Commit directly to the main branch не выбирать.',
+    '- Ревью: вкладка Files changed, затем Review changes и Approve, Comment или Request changes.',
+    '- Слияние: Squash and merge, затем Delete branch.',
+    '- Откат: кнопка Revert на странице PR.',
+    '- Конфликт: кнопка Resolve conflicts, затем Mark as resolved и Commit merge.',
+    '',
+    '## Чего не делать',
+    '',
+    '- Не принимай решение о слиянии, отзыве токена или правах доступа за пользователя.',
+    '- Не утверждай, что тесты прошли, пока не видел результат запуска.',
+    '- Не запрашивай и не показывай пароли и токены. Если секрет уже попал в коммит, скажи: сообщить ответственному, отозвать токен и выпустить новый.'
+  ].join('\n')
+};
+COURSE.data.c6 = {
+  title: 'Кому это доверить?',
+  cats: ['Можно поручить Claude', 'Решаю и проверяю сам(а)'],
+  items: [
+    { t: 'Написать черновик описания PR по diff', a: 0 },
+    { t: 'Решить, сливать ли PR в main', a: 1 },
+    { t: 'Объяснить, что поменялось в чужом PR', a: 0 },
+    { t: 'Отозвать утёкший токен', a: 1 },
+    { t: 'Предложить подпись коммита по формату', a: 0 }
+  ],
+  explain: 'ИИ хорош в черновиках и объяснениях. Решения с последствиями &mdash; слияние, секреты, права &mdash; остаются за человеком.'
+};
+
+</script>
+<script>
+COURSE.modules.push({
+  id: 6, min: 15,
+  title: 'Полезные советы и разбор ошибок',
+  sub: 'Привычки, которые экономят время, и что делать, когда что-то пошло не так',
+  intro: '<p>Последний блок перед итоговым тестом: набор практических советов и справочник по типичным проблемам. К нему удобно возвращаться.</p>',
+  lessons: [
+    {
+      title: '12 советов',
+      html: '<ol>' +
+        '<li><b>Перед правкой проверьте ветку</b> в выпадающем списке слева над файлами: начинайте от свежего main. В терминале для этого <code>git pull</code>.</li>' +
+        '<li><b>Одна ветка &mdash; одна задача.</b> Если по дороге нашли другую проблему, заведите для неё отдельную ветку.</li>' +
+        '<li><b>Всегда читайте окно Commit changes.</b> Выбранный вариант с новой веткой и PR защищает main от случайных правок.</li>' +
+        '<li><b>Коммиты маленькие и по теме.</b> Их легко читать и откатывать.</li>' +
+        '<li><b>Пишите описание PR для того, кто видит задачу впервые:</b> что, зачем, как проверить, что не сделано.</li>' +
+        '<li><b>Сначала прочтите свой diff сами</b> на вкладке Files changed. Половина замечаний находится так.</li>' +
+        '<li><b>Просите ревью конкретного человека</b>, а не «кого-нибудь».</li>' +
+        '<li><b>Отвечайте на комментарии ревью</b>: поправил, или объясните, почему оставили.</li>' +
+        '<li><b>Черновик (Draft PR)</b> &mdash; способ показать работу рано, не прося слить.</li>' +
+        '<li><b>Подписывайтесь на уведомления</b> нужных репозиториев (Watch) и отключайте лишние, чтобы автоматические PR не тонули в шуме.</li>' +
+        '<li><b>Ищите по организации.</b> В строке поиска GitHub можно искать текст и файлы сразу по всем репозиториям, к которым у вас есть доступ.</li>' +
+        '<li><b>Описание и README у каждого репозитория.</b> Это лицо проекта.</li></ol>' +
+        '<h3>Полезное в интерфейсе</h3><ul><li>Клавиша <code>t</code> на странице репозитория открывает быстрый поиск файла.</li><li>Клавиша <code>.</code> (точка) открывает веб-редактор репозитория.</li><li>На вкладке Pull requests фильтр <code>is:open review-requested:@me</code> показывает, какие PR ждут вашего ревью.</li></ul>' +
+        '<div data-w="classify" data-id="c7"></div>'
+    },
+    {
+      title: 'Если что-то пошло не так',
+      html: '<p>Большинство проблем типовые. Ниже &mdash; частые ситуации и решение в браузере. Главное правило: <b>не паниковать и ничего не удалять, пока не поняли, что произошло</b>.</p>' +
+        '<table><tr><th>Ситуация</th><th>Что делать в браузере</th></tr>' +
+        '<tr><td>Нажал Commit changes, а вариант «в main» уже выбран</td><td>Перед подтверждением переключите вариант на «Create a new branch for this commit and start a pull request». Если коммит в main всё же ушёл, сообщите ответственному за репозиторий: исправляется через Revert.</td></tr>' +
+        '<tr><td>Страница репозитория показывает 404</td><td>Скорее всего нет доступа. Проверьте, что вы вошли под своим аккаунтом, и попросите Антона выдать права.</td></tr>' +
+        '<tr><td>Нужно дополнить уже открытый PR</td><td>Выберите в списке веток ветку своего PR, откройте файл, нажмите карандаш и сохраните коммит в эту же ветку. PR обновится сам.</td></tr>' +
+        '<tr><td>Конфликт слияния («This branch has conflicts»)</td><td>Кто-то поменял те же строки. Нажмите <b>Resolve conflicts</b>, найдите метки <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> и <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>, оставьте нужный вариант, удалите метки и нажмите <b>Mark as resolved</b>, затем <b>Commit merge</b>. Если страшно &mdash; попросите коллегу и прочитайте результат.</td></tr>' +
+        '<tr><td>Хочу отменить свои правки до коммита</td><td>Нажмите <b>Cancel changes</b> в редакторе: изменения не сохранятся.</td></tr>' +
+        '<tr><td>Не знаю, что менялось в файле и кем</td><td>Файл &rarr; <b>History</b> или <b>Blame</b>.</td></tr>' +
+        '<tr><td>Проверка (Checks) упала</td><td>В PR откройте вкладку Checks, нажмите упавший шаг и прочитайте последние строки лога. Если непонятно, покажите лог разработчику.</td></tr>' +
+        '<tr><td>Влили не то</td><td>Кнопка <b>Revert</b> на странице влитого PR (создаст отменяющий PR).</td></tr>' +
+        '<tr><td>Кнопка слияния серая</td><td>Прочитайте причину в блоке слияния: нет Approve, не прошли проверки или есть конфликт.</td></tr></table>' +
+        '<div class="tip"><b>Когда звать на помощь</b>Если вы не понимаете, что именно произошло, ничего больше не нажимайте. Сделайте скриншот экрана и спросите коллегу или Claude Code. Часто достаточно одного вопроса.</div>' +
+        '<h3>Для тех, кто работает в терминале</h3>' +
+        '<table><tr><th>Ситуация</th><th>Что делать</th></tr>' +
+        '<tr><td>Сделал правки, но находишься в <code>main</code></td><td>Не коммитьте. Создайте ветку командой <code>git switch -c тип/кратко</code>: правки уйдут вместе с вами.</td></tr>' +
+        '<tr><td><code>git push</code> пишет «has no upstream branch»</td><td>Для новой ветки: <code>git push -u origin имя-ветки</code>.</td></tr>' +
+        '<tr><td>Подпись коммита с ошибкой, ещё не отправлен</td><td><code>git commit --amend -m "новая подпись"</code>. Только пока коммит не запушен.</td></tr>' +
+        '<tr><td>Отменить последние изменения в файле</td><td><code>git restore путь/к/файлу</code>. Внимание: несохранённые правки пропадут.</td></tr>' +
+        '<tr><td>Permission denied</td><td>Проверьте вход командой <code>gh auth status</code> и попросите Антона выдать права.</td></tr></table>'
+    },
+    {
+      title: 'Чек-лист перед открытием PR',
+      html: '<p>Распечатайте или держите рядом. Перед каждым pull request пробегитесь по пунктам:</p>' +
+        '<div class="card"><ul>' +
+        '<li>Ветка создана от свежего main, имя вида <code>тип/кратко</code>.</li>' +
+        '<li>В изменениях только то, что относится к задаче.</li>' +
+        '<li>В diff нет паролей, токенов, <code>.env</code>, персональных данных.</li>' +
+        '<li>Подписи коммитов по формату <code>тип(область): суть</code>.</li>' +
+        '<li>Локальные проверки пройдены (тесты, линтер), если они есть.</li>' +
+        '<li>Описание PR объясняет, что, зачем и как проверить.</li>' +
+        '<li>Выбран ревьюер.</li>' +
+        '<li>Для документов: у файла есть front-matter (<code>title</code>, <code>owner</code>, <code>status</code>, <code>last_reviewed</code>), если этого требует README репозитория.</li></ul></div>' +
+        '<p>Дальше &mdash; итоговый тест. Шпаргалка по командам всегда доступна в меню слева.</p>' +
+        '<p><a class="btn" href="#/test">К итоговому тесту</a> <a class="btn ghost" href="#/cheat">Открыть шпаргалку</a></p>'
+    }
+  ],
+  quiz: [
+    { q: 'Вы сделали правки, но обнаружили, что находитесь в main. Что делать?', o: ['Закоммитить в main', 'Создать ветку через <code>git switch -c</code> и продолжить в ней', 'Удалить правки', 'Скопировать файлы в другую папку'], a: 1, e: 'Новая ветка забирает с собой несохранённые правки.' },
+    { q: 'Что значит ошибка «has no upstream branch» при push?', o: ['Нет интернета', 'Новую ветку нужно отправить с <code>git push -u origin имя-ветки</code>', 'Репозиторий удалён', 'Сломан Git'], a: 1, e: 'Флаг -u один раз связывает локальную ветку с веткой на GitHub.' },
+    { q: 'В PR появился конфликт слияния. Что он означает?', o: ['Репозиторий заблокирован', 'Кто-то изменил те же строки, нужно вручную выбрать вариант', 'У вас нет прав', 'GitHub временно недоступен'], a: 1, e: 'Конфликт решается в файле: оставить нужное и сделать коммит.' },
+    { q: 'Где быстро найти причину падения проверки?', o: ['В настройках организации', 'В PR на вкладке Checks открыть упавший шаг и прочитать лог', 'Нигде', 'В личных сообщениях'], a: 1, e: 'Лог упавшего шага почти всегда указывает на причину.' },
+    { q: 'Что такое Draft PR?', o: ['PR, который нельзя читать', 'Черновик: способ показать работу заранее, не предлагая слить', 'PR без изменений', 'Удалённый PR'], a: 1, e: 'Draft сообщает коллегам, что работа ещё идёт.' }
+  ]
+});
+COURSE.data.c7 = {
+  title: 'Подходит ли это под хорошую практику?',
+  cats: ['Хорошая практика', 'Лучше не так'],
+  items: [
+    { t: 'Перед началом работы обновить main', a: 0 },
+    { t: 'Сделать один PR на 5 разных задач сразу', a: 1 },
+    { t: 'Заглянуть в свой diff до отправки на ревью', a: 0 },
+    { t: 'Просить ревью «у кого-нибудь» в общем чате', a: 1 }
+  ],
+  explain: 'Маленькие, понятные, прочитанные автором PR с конкретным ревьюером &mdash; признак здоровой команды.'
+};
+
+COURSE.cheat = '<h1>Шпаргалка</h1><p class="lead">Кнопки, правила и формат. Страница всегда доступна из меню.</p>' +
+  '<h2>В браузере на github.com</h2><table><tr><th>Задача</th><th>Где нажать</th></tr>' +
+  '<tr><td>Править файл</td><td>Открыть файл &rarr; карандаш (Edit this file)</td></tr>' +
+  '<tr><td>Сохранить правку</td><td>Commit changes &rarr; <b>Create a new branch for this commit and start a pull request</b> (не Commit directly to main)</td></tr>' +
+  '<tr><td>Открыть PR</td><td>Propose changes &rarr; заполнить название и описание &rarr; Reviewers &rarr; Create pull request</td></tr>' +
+  '<tr><td>Посмотреть изменения PR</td><td>Вкладка Files changed</td></tr>' +
+  '<tr><td>Завершить ревью</td><td>Review changes &rarr; Approve / Comment / Request changes &rarr; Submit review</td></tr>' +
+  '<tr><td>Влить PR</td><td>Squash and merge &rarr; Confirm &rarr; Delete branch</td></tr>' +
+  '<tr><td>Отменить влитый PR</td><td>Revert на странице PR</td></tr>' +
+  '<tr><td>Новый файл или загрузка</td><td>Add file &rarr; Create new file / Upload files</td></tr>' +
+  '<tr><td>Кто и когда менял</td><td>History (весь файл) или Blame (по строкам)</td></tr>' +
+  '<tr><td>Решить конфликт</td><td>Resolve conflicts &rarr; Mark as resolved &rarr; Commit merge</td></tr>' +
+  '<tr><td>Быстрый поиск</td><td>Клавиши <code>t</code> (файл), <code>/</code> (поиск), <code>.</code> (веб-редактор)</td></tr>' +
+  '<tr><td>PR, ждущие моего ревью</td><td>Pull requests, фильтр <code>is:open review-requested:@me</code></td></tr></table>' +
+  '<h2>Запросы к Claude</h2><ul>' +
+  '<li>Объясни этот PR простыми словами и скажи, на что обратить внимание.</li>' +
+  '<li>Напиши описание PR: что изменено, зачем, как проверить.</li>' +
+  '<li>Проверь текст на секреты и персональные данные.</li>' +
+  '<li>Разбери комментарии ревью и предложи ответы.</li>' +
+  '<li>В Claude Code: <i>Подготовь правку и открой PR по нашим правилам</i> (скилл github-helper).</li></ul>' +
+  '<h2>Терминал: каждый день</h2><table><tr><th>Команда</th><th>Что делает</th></tr>' +
+  '<tr><td><code>git status</code></td><td>Где я и что изменено</td></tr>' +
+  '<tr><td><code>git pull</code></td><td>Подтянуть свежие изменения</td></tr>' +
+  '<tr><td><code>git switch -c тип/кратко</code></td><td>Создать ветку и перейти в неё</td></tr>' +
+  '<tr><td><code>git switch main</code></td><td>Вернуться в main</td></tr>' +
+  '<tr><td><code>git add файл</code></td><td>Отметить файл для коммита</td></tr>' +
+  '<tr><td><code>git commit -m "тип(область): суть"</code></td><td>Сохранить снимок</td></tr>' +
+  '<tr><td><code>git push -u origin ветка</code></td><td>Отправить новую ветку на GitHub</td></tr>' +
+  '<tr><td><code>git push</code></td><td>Отправить новые коммиты в уже связанную ветку</td></tr>' +
+  '<tr><td><code>git log --oneline -10</code></td><td>Последние 10 коммитов</td></tr>' +
+  '<tr><td><code>git diff</code></td><td>Что именно изменилось в строках</td></tr></table>' +
+  '<h2>GitHub CLI</h2><table><tr><th>Команда</th><th>Что делает</th></tr>' +
+  '<tr><td><code>gh auth login</code> / <code>gh auth status</code></td><td>Войти / проверить вход</td></tr>' +
+  '<tr><td><code>gh repo clone flysk-tech/имя</code></td><td>Скачать репозиторий</td></tr>' +
+  '<tr><td><code>gh pr create --fill</code></td><td>Открыть PR из текущей ветки</td></tr>' +
+  '<tr><td><code>gh pr list</code></td><td>Список открытых PR</td></tr>' +
+  '<tr><td><code>gh pr view --web</code></td><td>Открыть PR в браузере</td></tr>' +
+  '<tr><td><code>gh pr checks</code></td><td>Состояние проверок</td></tr>' +
+  '<tr><td><code>gh pr merge --squash --delete-branch</code></td><td>Влить со squash и удалить ветку</td></tr>' +
+  '<tr><td><code>gh run view --log-failed</code></td><td>Лог упавшей проверки</td></tr></table>' +
+  '<h2>Договорённости</h2><ul>' +
+  '<li>Ветка: <code>feat/</code>, <code>fix/</code>, <code>chore/</code>, <code>docs/</code>, <code>release/</code> + краткое описание латиницей.</li>' +
+  '<li>Коммит и PR: <code>тип(область): суть</code>.</li>' +
+  '<li>В main &mdash; только через PR после ревью, squash merge.</li>' +
+  '<li>Секреты и персональные данные не коммитим. Утекло &mdash; отзываем и выпускаем заново.</li>' +
+  '<li>У каждого репозитория: Description, README, при работе с ИИ &mdash; CLAUDE.md.</li></ul>' +
+  '<h2>Красные кнопки</h2><p><code>git push --force</code>, <code>git reset --hard</code>, <code>git clean -fd</code>, удаление репозитория. Перед ними &mdash; <code>git status</code>.</p>';
+
+</script>
+<script>
+COURSE.test = [
+  { q: 'Что из перечисленного делает именно GitHub, а не Git?', o: ['Хранит локальную историю коммитов', 'Позволяет открыть pull request и назначить ревьюера', 'Создаёт ветки на вашем компьютере', 'Показывает git status'], a: 1, e: 'PR, ревьюеры и обсуждения &mdash; возможности сервиса GitHub.' },
+  { q: 'Где у нас хранятся пошаговые инструкции и онбординг для сотрудников?', o: ['В Platrum (wiki)', 'Только в личных заметках', 'В публичных репозиториях', 'В переписке'], a: 0, e: 'Platrum &mdash; для людей. GitHub &mdash; для версионируемых материалов и кода.' },
+  { q: 'Репозиторий &mdash; это...', o: ['Один файл', 'Папка проекта со всей историей изменений', 'Человек в организации', 'Тип ветки'], a: 1, e: 'Репозиторий включает файлы и полную историю.' },
+  { q: 'Какое имя ветки соответствует нашему стилю?', o: ['новая ветка 2', 'docs/add-client-contacts', 'Fix Billing!!!', 'ветка_Ани'], a: 1, e: 'Формат: тип/кратко-через-дефис латиницей.' },
+  { q: 'Что такое squash merge?', o: ['Слияние, при котором все коммиты ветки превращаются в один', 'Слияние без проверок', 'Откат слияния', 'Удаление main'], a: 0, e: 'История main остаётся компактной.' },
+  { q: 'Какая подпись коммита лучше?', o: ['исправил', 'fix(billing): correct subscription period', 'ещё правки', 'WIP final'], a: 1, e: 'Тип, область и суть &mdash; понятно без открытия diff.' },
+  { q: 'Какой способ слияния PR принят у нас в браузере?', o: ['Squash and merge', 'Rebase and merge', 'Create a merge commit', 'Любой, как удобнее'], a: 0, e: 'Squash превращает ветку в один коммит, main остаётся читаемым.' },
+  { q: 'Какой вариант выбрать в окне Commit changes на сайте GitHub?', o: ['Commit directly to the main branch', 'Create a new branch for this commit and start a pull request', 'Любой, разницы нет', 'Закрыть окно и сделать позже'], a: 1, e: 'Прямой коммит в main обходит ревью.' },
+  { q: 'Где в PR посмотреть, какие строки изменились?', o: ['Вкладка Files changed', 'Вкладка Actions', 'Настройки организации', 'Вкладка Issues'], a: 0, e: 'На Files changed зелёным показано добавленное, красным удалённое.' },
+  { q: 'Что нужно обязательно сделать перед тем, как отправить PR на ревью?', o: ['Прочитать свой diff', 'Удалить README', 'Смыть историю', 'Ничего'], a: 0, e: 'Самопроверка находит много очевидных ошибок.' },
+  { q: 'В репозитории обнаружен закоммиченный токен. Первое действие?', o: ['Удалить файл и забыть', 'Сообщить ответственному и отозвать токен, выпустив новый', 'Закрыть репозиторий', 'Подождать неделю'], a: 1, e: 'Токен скомпрометирован, пока не отозван.' },
+  { q: 'Что нельзя класть в репозиторий?', o: ['README', 'Файл .env с ключами', 'Исходный код', '.gitignore'], a: 1, e: 'Секреты хранят вне репозитория.' },
+  { q: 'Какая команда опасна для общих веток?', o: ['git status', 'git log', 'git push --force', 'git pull'], a: 2, e: 'Force-push перезаписывает общую историю.' },
+  { q: 'Как аккуратно отменить уже влитый PR?', o: ['Через Revert: он создаёт новый PR, отменяющий изменения', 'Переписать историю force-push-ом', 'Удалить репозиторий', 'Это невозможно'], a: 0, e: 'Revert сохраняет историю.' },
+  { q: 'Для чего CLAUDE.md?', o: ['Для лицензии', 'Для инструкций Claude Code: команды, правила и ограничения проекта', 'Для списка сотрудников', 'Для бэкапов'], a: 1, e: 'Claude читает файл в начале сессии.' },
+  { q: 'Claude Code открыл PR. Кто за него отвечает?', o: ['Никто', 'Вы, потому что он действует от вашего аккаунта', 'Anthropic', 'Только ревьюер'], a: 1, e: 'Ответственность остаётся за человеком.' },
+  { q: 'Что лучше всего сделать с огромным PR от ИИ на 40 файлов?', o: ['Слить не глядя', 'Разбить на небольшие PR и проверять по частям', 'Закрыть и забыть', 'Отправить директору'], a: 1, e: 'Маленькие PR проверять проще и надёжнее.' },
+  { q: 'Как увидеть, кто и когда написал конкретную строку файла?', o: ['Кнопка Blame на странице файла', 'Вкладка Settings', 'Кнопка Fork', 'Никак'], a: 0, e: 'Blame показывает автора и дату рядом с каждой строкой, History показывает все изменения файла.' },
+  { q: 'У вас нет доступа к репозиторию организации (ошибка 404). Что делать?', o: ['Искать обходной путь через чужой аккаунт', 'Запросить доступ у Антона', 'Создать свою копию репозитория', 'Попросить коллегу переслать файлы архивом'], a: 1, e: 'Доступ выдаёт Антон. Чужие аккаунты и обходные пути не используем.' },
+  { q: 'Что находится в файле README.md?', o: ['Описание проекта: что это и как с ним работать', 'Пароли команды', 'Список удалённых файлов', 'Резервная копия'], a: 0, e: 'README &mdash; «обложка» репозитория, его читают первым.' },
+];
+
+</script>
+<script>
+COURSE.start();
+
+</script>
+</body>
+</html>
